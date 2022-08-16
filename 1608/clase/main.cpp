@@ -18,6 +18,7 @@ void imprimir(ListaInt & L)
         cout << L->info << endl;
         L = L->sig;
     }
+    cout << "Se acabo la lista" << endl;
 }
 
 int main()
@@ -29,8 +30,8 @@ int main()
     // Inicializamos L2
     ListaInt L2 = new nodoListaInt;
     L2->info = 7;
-
-    imprimir(L1);
+    L2->sig = L1;
+    imprimir(L2);
     if (L1 == NULL)
     {
         cout << "La lista esta vacia" << endl;

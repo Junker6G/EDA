@@ -13,6 +13,8 @@ Formas de inicializar un puntero
 
 * CODIGO *
 
-typedef nodoListaInt* ListaInt;
+typedef nodoListaInt * ListaInt;
+(Se le pone un apodo de nodoListaInt)
+
 
 ===================================================================
