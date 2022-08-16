@@ -1,0 +1,18 @@
+Dinamico - Va ocupando la memoria a demanda
+Estatico - Ocupa la memoria desde el momento de compilacion
+
+===================================================================
+
+Formas de inicializar un puntero
+
+1. NULL
+2. new
+3. atraves de una direccion conocida
+
+===================================================================
+
+* CODIGO *
+
+typedef nodoListaInt* ListaInt;
+
+===================================================================
