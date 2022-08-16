@@ -21,13 +21,12 @@ int main()
     ListaInt L1 = NULL;
 
     L1 = retornarPositivos(1, L1);
-    L1 = retornarPositivos(-1, L1);
     L1 = retornarPositivos(23, L1);
     L1 = retornarPositivos(-44, L1);
     L1 = retornarPositivos(22, L1);
-    // L1 = retornarPositivos(5, L1);
-    // L1 = retornarPositivos(-12, L1);
-    // L1 = retornarPositivos(-42, L1);
+    L1 = retornarPositivos(5, L1);
+    L1 = retornarPositivos(-12, L1);
+    L1 = retornarPositivos(-42, L1);
 
 	imprimirlista(L1);
     }
@@ -35,7 +34,7 @@ int main()
 ListaInt retornarPositivos(int elem, ListaInt L){
     ListaInt nuevo = new nodoLista;
     nuevo->info = elem;
-    if (L == NULL || L->info >= 0)
+    if (L == NULL || L->info > 0)
     {
         nuevo->sig = L;
         return nuevo;
