@@ -15,19 +15,14 @@ typedef nodoLista *ListaInt;
 
 void imprimirlista(ListaInt);
 ListaInt retornarPositivos(int elem, ListaInt L);
-ListaInt retornarPositivos2(int elem, ListaInt L);
+ListaInt retornarPositivos3(int elem, ListaInt L);
+ListaInt positivos(ListaInt L);
 
 int main()
 {
     ListaInt L1 = NULL;
 
-    L1 = retornarPositivos2(1, L1);
-    L1 = retornarPositivos2(23, L1);
-    L1 = retornarPositivos2(-44, L1);
-    L1 = retornarPositivos2(22, L1);
-    L1 = retornarPositivos2(5, L1);
-    L1 = retornarPositivos2(-12, L1);
-    L1 = retornarPositivos2(-42, L1);
+    positivos(L1);
 
     imprimirlista(L1);
 }
@@ -54,13 +49,20 @@ ListaInt retornarPositivos(int elem, ListaInt L)
     }
 }
 
-ListaInt retornarPositivos2(int elem, ListaInt L)
+ListaInt positivos(ListaInt L)
 {
-    ListaInt nuevo = new nodoLista;
-    while (elem != NULL)
+    if (L == NULL)
+        return NULL;
+
+    if (L->info < 0)
+        return positivos(L->sig);
+
+    if (L->info >= 0)
     {
-        cout << elem << endl;
-        L = L->sig;
+        ListaInt nuevo = new nodoLista;
+        nuevo->info = L->info;
+        nuevo->sig = positivos(L->sig);
+        return nuevo;
     }
 }
 
@@ -82,7 +84,7 @@ ListaInt retornarPositivos3(int elem, ListaInt L)
         }
         else
         {
-            retornarPositivos2(elem, L->sig);
+            retornarPositivos3(elem, L->sig);
         }
     }
 }
