@@ -56,6 +56,16 @@ ListaInt retornarPositivos(int elem, ListaInt L)
 
 ListaInt retornarPositivos2(int elem, ListaInt L)
 {
+    ListaInt nuevo = new nodoLista;
+    while (elem != NULL)
+    {
+        cout << elem << endl;
+        L = L->sig;
+    }
+}
+
+ListaInt retornarPositivos3(int elem, ListaInt L)
+{
     if (L == NULL)
     {
         return L;
@@ -75,7 +85,6 @@ ListaInt retornarPositivos2(int elem, ListaInt L)
             retornarPositivos2(elem, L->sig);
         }
     }
-    
 }
 
 void imprimirlista(ListaInt L)
