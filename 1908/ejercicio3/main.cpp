@@ -3,51 +3,35 @@ using namespace std;
 
 struct nodoLista
 {
-    int info;
+    char info;
     nodoLista *sig;
 };
 
-typedef nodoLista *ListaInt;
+typedef nodoLista *ListaChar;
 
-void imprimirlista(ListaInt);
-ListaInt sumarAlFinal(int elem, ListaInt &L);
+void imprimirlista(ListaChar);
+void eliminarN(ListaChar & L, int n);
 
 int main()
 {
-    ListaInt L1 = NULL;
-
-    sumarAlFinal(5, L1);
-    sumarAlFinal(3, L1);
-    sumarAlFinal(1, L1);
-    sumarAlFinal(55, L1);
-    sumarAlFinal(2, L1);
-    sumarAlFinal(6, L1);
-    sumarAlFinal(8, L1);
-    sumarAlFinal(12, L1);
+    ListaChar L1 = NULL;
 
     imprimirlista(L1);
 }
 
-ListaInt sumarAlFinal(int elem, ListaInt &L)
-{
-    ListaInt nuevo = new nodoLista;
-    nuevo->info = elem;
-    nuevo->sig = NULL;
-    if (L == NULL)
-        L = nuevo;
-
-    else
+void eliminarN(ListaChar & L, int n){
+    ListaChar borrar;
+    while (L != NULL && n > 0)
     {
-        ListaInt aux = L;
-        while (aux->sig != NULL)
-        {
-            aux = aux->sig;
-        }
-        aux->sig = nuevo;
+        borrar = L;
+        L = L->sig;
+        delete borrar;
+        n--;
     }
+    
 }
 
-void imprimirlista(ListaInt L)
+void imprimirlista(ListaChar L)
 {
     cout << "Impresion de lista" << endl;
     while (L != NULL)
