@@ -21,6 +21,7 @@ void imprimir(ListaInt & L)
     cout << "Se acabo la lista" << endl;
 }
 
+
 int main()
 {
     // Inicializamos L1
