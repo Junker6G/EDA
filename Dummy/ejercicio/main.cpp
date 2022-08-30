@@ -14,25 +14,13 @@ void insertarAlComienzo(ListaInt L, int elem);
 void insertarAlFinal(ListaInt L, int elem);
 void insertarOrdenado(ListaInt L, int elem);
 
-int main()
+void imprimirlista(ListaInt L)
 {
-    ListaInt L = new nodoListaint;
-    L->sig = new nodoListaint;
-
-    insertarAlComienzo(L, 1);
-
-    imprimirlista(L);
-
-    return 0;
-}
-
-void imprimir(ListaInt L)
-{
-    L = L->sig;
-    while (L != NULL)
+    cout << "|X| - ";
+    while (L->sig != NULL)
     {
-        cout << L->info << "-" << endl;
         L = L->sig;
+        cout << L->info << " - " << endl;
     }
     cout << "fin de la lista" << endl;
 }
@@ -70,6 +58,38 @@ void insertarOrdenado(ListaInt L, int elem)
     L->sig = nuevo;
 }
 
-void eliminarElemento(ListaInt L, int elem) {
-    
+void eliminar(ListaInt L, int elem)
+{
+    ListaInt borrar;
+    while (L->sig != NULL)
+    {
+        if (L->sig->info == elem && L->sig->info != elem)
+        {
+            ListaInt borrar = L->sig;
+            L->sig = borrar->sig;
+            delete borrar;
+        }
+        else
+        {
+            L = L->sig;
+        }
+    }
+}
+
+void interseccion(ListaInt L1, ListaInt L2)
+{
+    ListaInt nuevo = new nodoListaint;
+    nuevo->sig = NULL;
+}
+
+int main()
+{
+    ListaInt L = new nodoListaint;
+    L->sig = NULL;
+
+    insertarAlComienzo(L, 1);
+
+    imprimirlista(L);
+
+    return 0;
 }
