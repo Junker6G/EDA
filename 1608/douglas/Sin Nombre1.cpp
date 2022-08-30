@@ -102,8 +102,3 @@ ListaInt Agregar_Ordenado (int elem, ListaInt L){
 	}
 }
 
-
-
-
-
-
