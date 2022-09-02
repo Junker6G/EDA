@@ -1,0 +1,106 @@
+1) Defina una función "iterativa" que dada una lista de
+enteros l ordenada de menor a mayor y un entero e,
+inserte a e en l de manera que la lista resultante quede
+ordenada. La lista modificada debe ser retornada por la
+función.
+
+2) Defina una función "recursiva" que dada una lista l de
+enteros retorne una nueva lista que contenga todos los
+elementos positivos de l, en el mismo orden
+
+3) Escriba un procedimiento "iterativo" que elimine
+físicamente, a lo sumo, los n primeros elementos de una
+lista de caracteres. Si n es mayor que la longitud de la
+lista, ésta debe quedar vacía.
+
+4) Defina una función "recursiva" que dada una lista de
+caracteres l y un caracter e, retorne una nueva lista que
+contenga todos los elementos de l, en el mismo orden,
+pero con el elemento e al final.
+
+5) Defina un tipo para representar las listas dinámicas de
+pares de caracteres y escriba luego una función
+"iterativa" que elimine físicamente, en caso de existir, el
+primer par de la lista cuya primera componente coincida
+con la segunda.
+
+6) Defina un tipo para representar las listas dinámicas de
+valores booleanos y escriba luego un procedimiento
+"recursivo" que elimine físicamente todos los elementos
+de una lista de booleanos, pasada como parámetro, cuyo
+valor lógico sea false.
+
+ 7) Definir el tipo IntLista de las listas encadenadas de
+elementos de tipo int. Escribir luego un subprograma
+iterativo con el siguiente cabezal:
+ void Juntar(IntLista & l1
+; int x; IntLista l2)
+ cuyo efecto sea el de agregar al final de la lista l1 un
+elemento con la información x y luego concatena la lista
+resultante con l2. El subprograma retorna la lista final en l1
+
+ 8) Resolver los ejercicios planteados sobre listas al final del
+teórico de inducción y recursión, implementando las listas
+con estructuras dinámicas (punteros).
+
+ 9) Defina una función recursiva merge en C/C++ que dadas dos
+listas de enteros ordenadas de menor a mayor, construya y retorne
+una nueva lista ordenada de menor a mayor que contenga todos los
+elementos de ambas listas. Por ejemplo, si las listas son [1,3,3,9] y
+[1,2,5], el resultado debería ser: [1,1,2,3,3,5,9].
+
+ 10)Defina una función inv_no_repeat en C/C++ que dada una lista
+de enteros ordenada de menor a mayor, devuelva una nueva lista
+ordenada de mayor a menor que contenga los mismo elementos
+que la lista original pero que no incluya elementos repetidos. Por
+ejemplo, si la lista es [1,3,3,4,5,5,5,9], el resultado debería ser:
+[9,5,4,3,1]. Sugerencia: piense un algoritmo iterativo
+
+ 11) Definir una función que dadas dos listas de enteros retorne true
+si, y solamente si, la primer lista es una sublista de la segunda. Una
+lista L1 es sublista de una lista L2 si existen listas L3 y L4 tales que:
+ L2 = L3++L1++L4, donde ++ es la concatenación de listas.
+
+ 12) Defina un procedimiento BorrarMin en C/C++ que dada una
+lista de enteros borre físicamente todas las ocurrencias del mínimo
+elemento de la lista. Si la lista es vacía el procedimiento no tiene
+efecto. Por ejemplo, si la lista es [4,7,2,5,8,2], luego de ejecutar
+BorrarMin, la lista debería quedar así: [4,7,5,8].
+
+ 13) Defina un procedimiento InsertOrd en C/C++ que dada una lista de
+enteros ordenada y un entero x, inserte a x en la lista de tal manera que la
+lista resultante quede ordenada.
+
+ 14) Defina una función que dada una lista de enteros y dado un entero no
+negativo k, retorne una nueva lista de enteros que contenga a lo sumo los
+primeros k elementos de la lista parámetro.
+ Ejemplos: Si L=[2,6,7,8,9,0,5] y k=3, la lista resultado es [2,6,7]. Si
+L=[2,6,3,8] y k=6, la lista resultado es [2,6,3,8]. Si k=0 o L=[], la lista
+resultado es [].
+
+ 15) Defina una función Ordenar que dada una lista de enteros con
+nodos de tipo ListNode retorne una lista ordenada, de menor a mayor, que
+contenga para cada elemento diferente de la lista parámetro la cantidad de
+veces que ocurre el elemento en dicha lista. Por ejemplo, dada la lista [9, 0,
+0, 3, 9, 0, 2], la lista resultado debe ser [(0,3), (2,1), (3,1), (9,2)]. Esto es, el
+0 ocurre tres veces, el 2 ocurre una vez, el 3 ocurre una vez y finalmente el 9
+ocurre dos veces.
+ Deberá definir el tipo de la lista resultante. Indique el orden de tiempo
+de ejecución en el peor caso de la función Ordenar. Justifique.
+
+ 16) Considere en C++, del tipo de los nodos de una lista de enteros, se pide:
+ a) Defina un procedimiento recursivo que dada una lista de enteros con
+nodos de tipo ListNode y dado un entero, elimine todas las ocurrencias del
+elemento de la lista.
+ b) Defina un procedimiento SinRepetidos que dada una lista de
+enteros con nodos de tipo ListNode deje en la lista una sola ocurrencia de cada
+elemento distinto, respetando el orden en que aparecen (de izquierda a derecha).
+ Por ejemplo, dada la lista [4, 0, 0, 3, 9, 4, 2, 0], la lista resultado debe ser [4,
+0, 3, 9, 2].
+
+17) Considere en C++, del tipo de los nodos de una lista
+de caracteres, se pide:
+Defina un procedimiento en C/C++ que dada una lista de
+caracteres elimine elementos repetidos consecutivos. Por
+ejemplo, si la lista es [‘a’, ‘d’, ‘d’, ‘e’, ‘e’, ‘e’, ‘a’], la lista debe
+quedar: [‘a’, ‘d’, ‘e’, ‘a’]. 
