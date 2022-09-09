@@ -80,9 +80,8 @@ void imprimir_arbol (ABChar a) {
 ABInt multiplicador(ABInt AB, int i)
 {
     if (AB == NULL)
-    {
         return 0;
-    }
+        
     AB->info = AB->info * i;
     multiplicador(AB->izq, i);
     multiplicador(AB->der, i);
