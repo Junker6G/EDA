@@ -7,9 +7,9 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "externalConsole": false,
-      "cwd": "l:/Usuarios/joaquin.sellanes/Desktop/EDA",
-      "program": "l:/Usuarios/joaquin.sellanes/Desktop/EDA/build/Debug/outDebug",
+      "externalConsole": true,
+      "cwd": "l:/Usuarios/joaquin.sellanes/Desktop/EDA/0909",
+      "program": "l:/Usuarios/joaquin.sellanes/Desktop/EDA/0909/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
