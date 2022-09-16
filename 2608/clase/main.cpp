@@ -485,7 +485,7 @@ int main(){
     imprimir(L);
     cout << endl << endl;
     ejercicio_16 (L);
-    cout << "La lista después de eliminar repetidos: " << endl;
+    cout << "La lista despues de eliminar repetidos: " << endl;
     imprimir(L);
     return 0;
 }
