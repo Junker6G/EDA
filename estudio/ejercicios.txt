@@ -104,3 +104,4 @@ Defina un procedimiento en C/C++ que dada una lista de
 caracteres elimine elementos repetidos consecutivos. Por
 ejemplo, si la lista es [‘a’, ‘d’, ‘d’, ‘e’, ‘e’, ‘e’, ‘a’], la lista debe
 quedar: [‘a’, ‘d’, ‘e’, ‘a’]. 
+
