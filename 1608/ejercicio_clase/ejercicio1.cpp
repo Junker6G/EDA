@@ -1,4 +1,8 @@
+
 #include <iostream>
+#include <iomanip>      // Utilizado para la vista de tablas.
+#include <stdlib.h>
+#include <string>
 using namespace std;
 
 struct nodoListaInt
@@ -22,16 +26,24 @@ void imprimir(ListaInt &L)
 int main()
 {
 
-    ListaInt L1 = NULL;
-    ListaInt aux;
+    string nombreCompletoOriginal = "Eduardo_Pelela";
+    string nombreCompleto = nombreCompletoOriginal;
+    string demi = "_";
 
-    for (size_t i = 10; i > 0; i--)
-    {
-        ListaInt aux = new nodoListaInt;
-        aux->info = i;
-        aux->sig = L1;
-        L1 = aux;
-    }
+    cout << nombreCompleto.find(demi) << endl; 
+    cout << nombreCompleto.substr(0, nombreCompleto.find(demi)) << endl;
+    cout << nombreCompleto.substr(nombreCompleto.find(demi) + 1) << endl;
+    cout << nombreCompleto.erase(0, nombreCompleto.find(demi) + 1) << endl;
+        // ListaInt L1 = NULL;
+        // ListaInt aux;
 
-    imprimir(L1);
+        // for (size_t i = 10; i > 0; i--)
+        // {
+        //     ListaInt aux = new nodoListaInt;
+        //     aux->info = i;
+        //     aux->sig = L1;
+        //     L1 = aux;
+        // }
+
+        // imprimir(L1);
 }
