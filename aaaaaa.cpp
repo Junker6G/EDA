@@ -6,12 +6,11 @@
 #include <thread>
 #include <chrono>
 
-
 #define empty -1000000
 
 using namespace std;
-using std::string;
 using std::stoi;
+using std::string;
 
 //  --------------- ESTRUCUTRAS ---------------
 struct nodoTablas;
@@ -77,6 +76,7 @@ void createTable(string nuevaTabla)
     {
         Tabla insertar_t = new nodoTablas;
         insertar_t->nombreTabla = nuevaTabla;
+        insertar_t->columna = NULL;
         insertar_t->ant = NULL;
         insertar_t->sig = NULL;
 
@@ -175,18 +175,18 @@ void addCol(string nomTabla, string nombreCol, string tipoCol, string calificado
     {
         if (aux->nombreTabla == nomTabla)
         {
-            cout << "Encontre una tabla " << aux->nombreTabla << endl;
+            // cout << "Encontre una tabla " << aux->nombreTabla << endl;
             columna aux1 = aux->columna;
 
             if (aux->columna == NULL)
             {
                 columna nuevaColumna = new nodoColumna;
+                // cout << aux->nombreTabla << endl;
                 aux->columna = nuevaColumna;
                 nuevaColumna->sig = NULL;
                 nuevaColumna->ant = NULL;
                 nuevaColumna->filas = NULL;
                 nuevaColumna->nombreColumna = nombreCol;
-
                 nuevaColumna->primary_key = false;
                 nuevaColumna->nn = false;
 
@@ -207,7 +207,7 @@ void addCol(string nomTabla, string nombreCol, string tipoCol, string calificado
                 {
                     nuevaColumna->nn = true;
                 }
-                cout << "Se ha creado " << nombreCol << endl;
+                // cout << "Se ha creado " << nombreCol << endl;
                 return;
             }
 
@@ -240,6 +240,13 @@ void addCol(string nomTabla, string nombreCol, string tipoCol, string calificado
             nuevaColumna->primary_key = false;
             nuevaColumna->nn = false;
 
+            while (aux2->ant != NULL)
+            {
+                aux2 = aux2->ant;
+            }
+
+            aux->columna = aux2;
+
             if (tipoCol == "int")
             {
                 nuevaColumna->tipo_dato = true;
@@ -257,7 +264,7 @@ void addCol(string nomTabla, string nombreCol, string tipoCol, string calificado
             {
                 nuevaColumna->nn = true;
             }
-            cout << "Se ha creado " << nombreCol << endl;
+            // cout << "Se ha creado " << nombreCol << endl;
             return;
         }
         aux = aux->sig;
@@ -482,28 +489,27 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
 
     if (columnasTupla.find(limite) > no_encontrado || columnasTupla == "")
     {
-        cout << "[ " << columnasTupla << " ]" << " no cumple con las condiciones requeridas" << endl;
+        cout << "[ " << columnasTupla << " ]"
+             << " no cumple con las condiciones requeridas" << endl;
         return;
     }
-
     if (valoresTupla.find(limite) > no_encontrado || valoresTupla == "")
     {
-        cout << "[ " << valoresTupla << " ]" << " no cumple con las condiciones requeridas" << endl;
+        cout << "[ " << valoresTupla << " ]"
+             << " no cumple con las condiciones requeridas" << endl;
         return;
     }
-
     string columnasTuplaCopia = columnasTupla;
     string valoresTuplaCopia = valoresTupla;
     int cant_palabrasColumna = 1;
     int cant_palabrasTupla = 1;
 
-    // cout << columnasTuplaCopia.find(limite) << endl << no_encontrado << endl; 
+    // cout << columnasTuplaCopia.find(limite) << endl << no_encontrado << endl;
     while (columnasTuplaCopia.find(limite) < no_encontrado)
     {
         columnasTuplaCopia.erase(0, columnasTuplaCopia.find(limite) + 1);
         cant_palabrasColumna++;
     }
-
 
     while (valoresTuplaCopia.find(limite) < no_encontrado)
     {
@@ -513,7 +519,7 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
 
     if (cant_palabrasColumna != cant_palabrasTupla)
     {
-        cout << "La cantidad de palabras es distinta" << endl;
+        cout << "ERROR - La cantidad de palabras es distinta" << endl;
         return;
     }
 
@@ -522,6 +528,7 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
         cout << "ERROR - NO HAY TABLAS EXISTENTES -" << endl;
         return;
     }
+    // BUSCAMOS LA TAMBLA QUE QUEREMOS
     Tabla existeTabla = BD;
     Tabla aux = NULL;
     columna aux1 = NULL;
@@ -533,9 +540,11 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
             if (aux->columna != NULL)
             {
                 aux1 = existeTabla->columna;
-            }else
+            }
+            else
             {
                 cout << "ERROR - LA TABLA NO TIENE COLUMNAS" << endl;
+                return;
             }
             break;
         }
@@ -554,7 +563,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
         cantidad++;
         cantidadColumnas = cantidadColumnas->sig;
     }
-    if(cantidad != cant_palabrasColumna){
+    if (cantidad != cant_palabrasColumna)
+    {
         cout << "ERROR - LA CANTIDAD DE COLUMNAS DE LA TABLA Y LA CANTIDAD DE COLUMNAS INGRESADAS NO COINCIDEN" << endl;
         return;
     }
@@ -578,7 +588,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
         // break;
         if (aux1->primary_key == true)
         {
-            if(valor == ""){
+            if (valor == "")
+            {
                 cout << "ERROR - EL VALOR AL INGRESAR EN LA COLUMNA PK ES VACIO, POR ENDE NO SE CREARA LA NUEVA FILA" << endl;
                 return;
             }
@@ -597,7 +608,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
                         }
                         buscarKey = buscarKey->abajo;
                     }
-                }else
+                }
+                else
                 {
                     while (buscarKey != NULL)
                     {
@@ -619,8 +631,7 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
                 return;
             }
         }
-        
-        
+
         if (aux1->tipo_dato == true)
         {
             int nuevoValor = stoi(valor);
@@ -629,7 +640,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
             {
                 nuevaFila = nuevo;
                 cout << "entre 1" << endl;
-            }else
+            }
+            else
             {
                 nuevaFila->sig = nuevo;
                 nuevo->ant = nuevaFila;
@@ -637,7 +649,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
                 cout << "entre 2" << endl;
             }
             // cout << nuevoValor << endl;
-        }else
+        }
+        else
         {
             string nuevoValor = valor;
             nuevo->dato_string = nuevoValor;
@@ -645,8 +658,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
             {
                 nuevaFila = nuevo;
                 cout << "entre 1" << endl;
-
-            }else
+            }
+            else
             {
                 nuevaFila->sig = nuevo;
                 nuevo->ant = nuevaFila;
@@ -676,7 +689,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
             aux1 = aux1->sig;
             nuevaFila = nuevaFila->sig;
         }
-    }else
+    }
+    else
     {
         filas conectar = aux1->filas;
         while (conectar->abajo != NULL)
@@ -691,63 +705,36 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
             conectar = conectar->sig;
             nuevaFila = nuevaFila->sig;
         }
-        
     }
     cout << "NUEVA FILA CREADA CON EXITO!!!" << endl;
 }
 
 void deleteTupla(string nombreTabla, string condicionEliminar)
 {
-    if (BD == NULL)
+    Tabla aux = BD;
+    if (aux == NULL)
     {
-        cout << "ERROR - NO HAY TABLAS EXISTENTES -" << endl;
+        cout << "No existen tablas..." << endl;
         return;
     }
-    Tabla aux = BD;
     while (aux != NULL)
     {
         if (aux->nombreTabla == nombreTabla)
         {
             if (aux->columna == NULL)
             {
-                cout << "No existe ninguna columna" << endl;
+                cout << "No existen columnas..." << endl;
                 return;
             }
-            columna aux1 = aux->columna;
-
-            while (aux1 != NULL)
-            {
-                filas aux2 = aux1->filas;
-
-                while (aux2 != NULL && aux2->abajo != NULL)
-                {
-
-                    while (aux2->abajo->sig != NULL)
-                    {
-                        aux2 = aux2->abajo->sig;
-                    }
-                    while (aux2->abajo->ant != NULL)
-                    {
-                        aux2 = aux2->abajo->ant;
-                    }
-                    aux2 = aux2->abajo;
-                }
-                // ahora todos los punteros llegaron a NULL
-                if (condicionEliminar == "")
-                {
-                    filas borrar = aux2;
-                    // aux2 = aux2->abajo;
-                    borrar->abajo = NULL;
-                    borrar->arriba = NULL;
-                    borrar->sig = NULL;
-                    borrar->ant = NULL;
-                    delete borrar;
-                }
-            }
-            aux1 = aux1->sig;
+            break;
+        }
+        aux = aux->sig;
+        if (aux == NULL){
+            cout << "No existen tablas..." <<nombreTabla<< endl;
+            return;
         }
     }
-    aux = aux->sig;
+    if(condicionEliminar)
 }
 
 //  ------------------------------ PRINTS ------------------------------
@@ -776,23 +763,21 @@ void printMetadata(string nombreTabla)
         cout << "No existen tablas" << endl;
         return;
     }
-
     while (aux != NULL)
     {
-        cout << "-" << aux->nombreTabla << endl;
-
-        if (aux->columna == NULL)
-        {
-            cout << "No existen columnas" << endl;
-            return;
-        }
-
         if (aux->nombreTabla == nombreTabla)
         {
+            if (aux->columna == NULL)
+            {
+                cout << "No existen columnas" << endl;
+                return;
+            }
+            cout << "-" << aux->nombreTabla << endl;
             columna aux1 = aux->columna;
             do
             {
-                cout << "|" << setw(20) << aux1->nombreColumna << "|" << endl;
+
+                cout << aux1->nombreColumna << endl;
 
                 if (aux1->primary_key == true)
                 {
@@ -819,44 +804,131 @@ void printMetadata(string nombreTabla)
                 }
                 aux1 = aux1->sig;
             } while (aux1 != NULL);
-            aux = aux->sig;
         }
+
+        aux = aux->sig;
+        if (aux == NULL)
+        {
+            return;
+        }
+    }
+}
+
+void printDataTable(string nombreTabla, string ordenadaPor)
+{
+
+    Tabla aux = BD;
+    if (aux == NULL)
+    {
+        cout << "No existen tablas" << endl;
         return;
+    }
+    while (aux != NULL)
+    {
+        if (aux->nombreTabla == nombreTabla)
+        {
+            cout << nombreTabla << endl;
+            break;
+        }
+
+        aux = aux->sig;
+        if (aux == NULL)
+        {
+            cout << "No se encontro la tabla..." << endl;
+            return;
+        }
+    }
+    if (aux->columna == NULL)
+    {
+        cout << "No existen columnas..." << endl;
+        return;
+    }
+    columna aux1 = aux->columna;
+    if (aux1->filas == NULL)
+    {
+        cout << "No existen filas para imprimir..." << endl;
+        return;
+    }
+    while (aux1 != NULL)
+    {
+        cout << setw(20 + (aux1->nombreColumna.length())) << aux1->nombreColumna;
+        aux1 = aux1->sig;
+
+        if (aux1 == NULL)
+        {
+            cout << endl;
+        }
+    }
+    aux1 = aux->columna;
+
+    filas imprimir = aux1->filas;
+    while (imprimir != NULL)
+    {
+        while (aux1 != NULL)
+        {
+            if (aux1->tipo_dato == true)
+            {
+                cout << setw(20) << " [] " << imprimir->dato_int << " [] ";
+            }
+            else
+            {
+                cout << setw(20 - (imprimir->dato_string.length())) << " [] " << imprimir->dato_string << " [] ";
+            }
+            aux1 = aux1->sig;
+            if (imprimir->sig != NULL)
+            {
+                imprimir = imprimir->sig;
+            }
+
+            if (aux1 == NULL)
+            {
+                cout << endl;
+            }
+        }
+        aux1 = aux->columna;
+        while (imprimir->ant != NULL)
+            imprimir = imprimir->ant;
+        imprimir = imprimir->abajo;
     }
 }
 
 int main()
 {
     system("cls");
-    createTable("personas");
-    createTable("tipo_arboles");
     createTable("pescados");
+    createTable("tipo_arboles");
+    createTable("personas");
+    createTable("hi");
     // cout << "nombre de la tabla" << endl;
 
-    createTable("hi");
     // imprimir(BD);
     // imprimir(BD);
-
     // addCol("alo", "queso", "", "");
     addCol("personas", "cedula", "int", "primary_key");
     addCol("personas", "nombres", "string", "nn");
-    addCol("personas", "apellidos", "string", "nn");
+    addCol("personas", "apellido", "string", "nn");
+    // addCol("personas", "nombrePerro", "string", "nn");
 
     // addCol("pescados", "naranja", "", "primary_key");
     // addCol("alo", "soto", "int", "nn");
     // addCol("alo", "quiesoto", "int", "nn");
     // alterCol("alo", "quesoto", "", "primary_key", "sioto");
-    system("cls");
-    cout << "llegue al insertInto" << endl << endl << endl;
-    
-    
+    // system("cls");
+    // cout << "llegue al print" << endl
+    //      << endl
+    //      << endl;
+
     insertInto("personas", "cedula:nombres:apellidos", "2:jose:soto");
     insertInto("personas", "cedula:nombres:apellidos", "3:decime:quesi");
     insertInto("personas", "cedula:nombres:apellidos", "1:esteban:quito");
-    
-    
-    cout << endl << endl << endl;
-    cout << "sali de insertInto" << endl << endl ;
+
+    printDataTable("personas", "");
+    // printMetadata("pescados");
+    // cout << endl
+    //      << endl
+    //      << endl;
+    // cout << "sali del print" << endl
+    //      << endl;
     // printTables(BD);
     // printMetadata("personas");
     // dropTable("hi");addCol("alo", "qu
