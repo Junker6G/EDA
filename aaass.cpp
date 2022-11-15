@@ -73,31 +73,37 @@ void createTable(string nuevaTabla)
         BD = insertar_t;
         return;
     }
-    while (BD != NULL)
+    Tabla aux = BD;
+    Tabla insertar_t = new nodoTablas;
+    insertar_t->nombreTabla = nuevaTabla;
+    insertar_t->columna = NULL;
+    insertar_t->ant = NULL;
+    insertar_t->sig = NULL;
+    while (aux != NULL )
     {
-        Tabla insertar_t = new nodoTablas;
-        insertar_t->nombreTabla = nuevaTabla;
-        insertar_t->columna = NULL;
-        insertar_t->ant = NULL;
-        insertar_t->sig = NULL;
-
-        if (BD->nombreTabla == nuevaTabla)
+        if (aux->nombreTabla == nuevaTabla)
         {
             cout << "Ya existe una tabla con el nombre ingresado... " << nuevaTabla << endl;
             return;
         }
-        if (BD->sig == NULL)
-        {
-            BD->sig = insertar_t;
-            insertar_t->ant = BD;
-
-            while (BD->ant != NULL)
-            {
-                BD = BD->ant;
-            }
+        aux = aux->sig;
+    }
+    aux = BD;
+    while (aux != NULL){
+        if (aux->sig == NULL){
+            aux->sig = insertar_t;
+            insertar_t->ant = aux;
             return;
         }
-        BD = BD->sig;
+        if (aux->nombreTabla > nuevaTabla)
+        {
+            insertar_t->sig = aux;
+            insertar_t->ant = aux->ant;
+            aux->ant->sig = insertar_t;
+            aux->ant = insertar_t;
+            return;
+        }
+        aux = aux->sig;
     }
 }
 void dropTable(string tablaEliminar)
@@ -245,7 +251,6 @@ void addCol(string nomTabla, string nombreCol, string tipoCol, string calificado
             }
 
             aux->columna = aux2;
-
             if (tipoCol == "int")
             {
                 nuevaColumna->tipo_dato = true;
@@ -449,9 +454,13 @@ void alterCol(string tabla, string nombreCol, string tipoColNuevo, string califi
                         aux2 = aux2->sig;
                     } while (aux2 != NULL);
 
-                    nombreCol = nombreColNuevo;
+                    aux1->nombreColumna = nombreColNuevo;
                     cout << "Se cambio el nombre de la columna " << nombreCol << endl;
-
+                    if (tipoColNuevo == "int" && aux1->tipo_dato == false && aux1->filas == NULL)
+                    {
+                        aux1->tipo_dato = true;
+                    }
+                    
                     if (tipoColNuevo == "string" && aux1->tipo_dato == true && aux1->filas != NULL)
                     {
                         filas convertidor = aux1->filas;
@@ -464,6 +473,7 @@ void alterCol(string tabla, string nombreCol, string tipoColNuevo, string califi
                             convertidor = convertidor->abajo;
                         }
                     }
+                    return;
                 }
                 aux1 = aux1->sig;
             }
@@ -944,7 +954,7 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
         break;
     }
 }
-*/
+
 void updateTupla(string nombreTabla, string condicionModificar, string columnaModificar, string valorModficar)
 {
     string valorColumna;
@@ -1001,6 +1011,7 @@ void updateTupla(string nombreTabla, string condicionModificar, string columnaMo
     
 }
 
+*/
 //  ------------------------------ FUNCIONES ENTRE TABLAS ------------------------------
 void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
 {
@@ -1116,7 +1127,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
         }
         copiarColumna = copiarColumna->sig;
     }
-    cout << columnas << endl;
+    //cout << columnas << endl;
     copiarColumna = aux->columna;
     while (true)
     {
@@ -1143,7 +1154,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
             tipodato = "string";
         }
         addCol(nombreTabla2, copiarColumna->nombreColumna, tipodato, calificador);
-        cout << "cree la columna " << copiarColumna->nombreColumna << endl;
+        //cout << "cree la columna " << copiarColumna->nombreColumna << endl;
         if (copiarColumna->sig == NULL)
         {
             break;
@@ -1165,7 +1176,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
             {
                 condicionColumna = aux1;
                 buscar = aux1->filas;
-                cout << aux1->nombreColumna << endl;
+                //cout << aux1->nombreColumna << endl;
                 cout << "Existe la columna..." << aux1->nombreColumna << endl;
                 if (aux1->filas == NULL)
                 {
@@ -1188,7 +1199,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
         condicionColumna = aux1;
     }
 
-    cout << condicion_ << endl;
+    //cout << condicion_ << endl;
     switch (condicion_)
     {
     case 1:
@@ -1627,7 +1638,6 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
         buscar = aux1->filas;
         while (buscar != NULL)
         {
-            cout << "anachii" << endl;
             filas copiarFila = buscar;
             columna aux1 = aux->columna;
             while (copiarFila->ant)
@@ -1636,7 +1646,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
             }
             while (true)
             {
-                cout << "el valor es... " << val << endl;
+                //cout << "el valor es... " << val << endl;
                 if (aux1->tipo_dato)
                 {
                     stringstream ss;
@@ -1735,13 +1745,13 @@ void printMetadata(string nombreTabla)
                         cout << "El calificador es ANY" << endl;
                     }
                 }
-                if (aux1->tipo_dato = true)
+                if (aux1->tipo_dato == true)
                 {
-                    cout << "El dato es INTEGER" << endl;
+                    cout << "El dato es INTEGER" << endl << endl;
                 }
                 else
                 {
-                    cout << "El dato es STRING" << endl;
+                    cout << "El dato es STRING" << endl << endl;
                 }
                 aux1 = aux1->sig;
             } while (aux1 != NULL);
@@ -1792,7 +1802,7 @@ void printDataTable(string nombreTabla, string ordenadaPor)
     }
     while (aux1 != NULL)
     {
-        cout << setw(20 + (aux1->nombreColumna.length())) << aux1->nombreColumna;
+        cout << " - " << aux1->nombreColumna << " - ";
         aux1 = aux1->sig;
 
         if (aux1 == NULL)
@@ -1801,7 +1811,7 @@ void printDataTable(string nombreTabla, string ordenadaPor)
         }
     }
     aux1 = aux->columna;
-
+    cout << endl;
     filas imprimir = aux1->filas;
     while (imprimir != NULL)
     {
@@ -1833,14 +1843,11 @@ void printDataTable(string nombreTabla, string ordenadaPor)
     }
 }
 
-/*
 int main()
 {
     system("cls");
-    createTable("pescados");
-    createTable("tipo_arboles");
+
     createTable("personas");
-    createTable("hi");
     // cout << "nombre de la tabla" << endl;
 
     // imprimir(BD);
@@ -1855,23 +1862,19 @@ int main()
     //  addCol("pescados", "naranja", "", "primary_key");
     //  addCol("alo", "soto", "int", "nn");
     //  addCol("alo", "quiesoto", "int", "nn");
-    //  alterCol("alo", "quesoto", "", "primary_key", "sioto");
+    alterCol("personas", "nombres", "int", "nn", "sioto");
     //  system("cls");
     //  cout << "llegue al print" << endl
+    printMetadata("personas");
     //       << endl
-    insertInto("personas", "cedula:nombres:apellido:edad", "1:esteban:quito:25");
-    insertInto("personas", "cedula:nombres:apellido:edad", "7:mili:vairo:19");
-    insertInto("personas", "cedula:nombres:apellido:edad", "2:jose:soto:23"); //       << endl;
 
     // insertInto("personas", "cedula:nombres:apellidos:edad", "3:decime:quesi:57");
     //  dropCol("personas", "nombres");
     // deleteTupla("personas", "apellido<quito");
-    selectWhere("personas", "", "mascotas");
     // selectWhere("personas", "nombres=jose", "mascotas");
     // updateTupla("personas", "cedula=7", "apellido", "vaioro");
     //   printTables(BD);
     //  printMetadata("mascotas");
-    printDataTable("mascotas", "");
     //  printDataTable("personas", "");
     //
     //  cout << endl
@@ -1886,309 +1889,5 @@ int main()
     // imprimir(BD);
 
     return 0;
-}*/
-
-//  ------------------------------ MENUS ------------------------------
-int main()
-{
-    int opcion;
-
-    cout << "BIENVENIDO :D\n"
-         << endl;
-
-    do
-    {
-        cout << "1 - INGRESAR A LA BASE DE DATOS\n"
-             << "2 - VISUALIZAR SU BASE DE DATOS\n"
-             << "0 - SALIR" << endl;
-        cin >> opcion;
-        getchar();
-        switch (opcion)
-        {
-
-        case 1:
-            system("cls");
-            sub_menu();
-            break;
-
-        case 2:
-            system("cls");
-            submenu_imprimir();
-            break;
-
-        case 0:
-        default:
-            system("cls");
-            cout << "..." << endl;
-            break;
-        }
-    } while (opcion != 0);
 }
 
-void sub_menu()
-{
-
-    int opcion;
-    do
-    {
-        cout << "1 - TABLAS\n"
-             << "2 - COLUMNAS\n"
-             << "3 - TUPLAS\n"
-             << "0 - Volver al menu principal" << endl;
-
-        cin >> opcion;
-        getchar();
-        switch (opcion)
-        {
-        case 1:
-        {
-            system("cls");
-            submenu_tablas();
-            break;
-        }
-        case 2:
-        {
-            system("cls");
-            submenu_columnas();
-            break;
-        }
-        case 3:
-        {
-            system("cls");
-            submenu_tuplas();
-            system("clear");
-            break;
-        }
-
-        case 0:
-        {
-            system("cls");
-            cout << "Regresando..." << endl;
-            main();
-        }
-        }
-    } while (opcion != 0);
-}
-
-void submenu_tablas()
-{
-    string nombreTabla;
-    string nombreTabla2;
-    string condicion;
-    string eliminarTabla;
-
-    int opcion;
-    do
-    {
-        cout << "1 - CREAR TABLAS\n"
-             << "2 - ELIMINAR TABLAS\n"
-             << "3 - OPERACIONES ENTRE TABLAS\n"
-             << "0 - Volver al submenu" << endl;
-
-        cin >> opcion;
-        getchar();
-        switch (opcion)
-        {
-        case 1:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de la TABLA a crear" << endl;
-            cin >> nombreTabla;
-            createTable(nombreTabla);
-            break;
-        }
-        case 2:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de su TABLA a eliminar" << endl;
-            cin >> eliminarTabla;
-            dropTable(eliminarTabla);
-            break;
-        }
-        case 3:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de su TABLAr" << endl;
-            cin >> nombreTabla;
-            cout << "Ingrese la condicion" << endl;
-            cin >> condicion;
-            cout << "Ingrese el nombre de la nueva TABLA a crear";
-            cin >> nombreTabla2;
-            selectWhere(nombreTabla, condicion, nombreTabla2);
-            break;
-        }
-        case 0:
-        {
-            system("cls");
-            cout << "..." << endl;
-            system("cls");
-            sub_menu();
-        }
-        }
-    } while (opcion != 0);
-}
-
-void submenu_columnas()
-{
-    string nombreColumna;
-    string eliminarColumna;
-    string modificarColumna;
-    string calificador;
-    string tipo_dato;
-    string nombreTabla;
-
-    int opcion;
-
-    do
-    {
-        cout << "1 - CREAR COLUMNA\n"
-             << "2 - MODIFICAR COLUMNA\n"
-             << "3 - ELIMINAR COLUMNA\n"
-             << "0 - Volver al submenu" << endl;
-
-        cin >> opcion;
-        getchar();
-        switch (opcion)
-        {
-        case 1:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de la TABLA donde creara la COLUMNA" << endl;
-            cin >> nombreTabla;
-            cout << "Ingrese el nombre de la Columna a crear" << endl;
-            cin >> nombreColumna;
-            cout << "Ingrese el tipo de dato a utilizar" << endl;
-            cin >> tipo_dato;
-            cout << "Ingrese el calificador de dato a utilizar" << endl;
-            cin >> calificador;
-            cout << endl;
-            addCol(nombreTabla, nombreColumna, tipo_dato, calificador);
-            break;
-        }
-        case 2:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de la TABLA donde modificara su COLUMNA" << endl;
-            cin >> nombreTabla;
-            cout << "Ingrese el nombre de la Columna a modificar" << endl;
-            cin >> nombreColumna;
-            cout << "Ingrese el tipo de dato a modificar" << endl;
-            cin >> tipo_dato;
-            cout << "Ingrese el calificador de dato a modificar" << endl;
-            cin >> calificador;
-            cout << endl;
-            addCol(nombreTabla, nombreColumna, tipo_dato, calificador);
-            break;
-        }
-        case 3:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de la TABLA donde eliminara su COLUMNA" << endl;
-            cin >> nombreTabla;
-            cout << "Ingrese el nombre de la Columna a eliminar" << endl;
-            cin >> eliminarColumna;
-            dropCol(nombreTabla, nombreColumna);
-            break;
-        }
-        case 0:
-        {
-            system("cls");
-            cout << "..." << endl;
-            system("cls");
-            sub_menu();
-        }
-        }
-    } while (opcion != 0);
-}
-
-void submenu_tuplas()
-{
-    string nombreTabla;
-    string nombreColumna;
-    string valoresTuplas;
-    string limite = ":";
-    int opcion;
-
-    do
-    {
-        cout << "1 - CREAR TUPLAS\n"
-             << "2 - MODIFICAR TUPLAS\n"
-             << "3 - ELIMINAR TUPLAS\n"
-             << "0 - Volver al submenu" << endl;
-        cin >> opcion;
-        getchar();
-        switch (opcion)
-        {
-        case 1:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de la TABLA" << endl;
-            cin >> nombreTabla;
-            cout << "Ingrese el nombre de la COLUMNA" << endl;
-            cin >> nombreColumna;
-            cout << "Ingrese la TUPLA" << endl;
-            cin >> valoresTuplas;
-            cout << endl;
-            insertInto(nombreTabla, nombreColumna, valoresTuplas);
-            break;
-        }
-        case 2:
-        {
-            system("cls");
-            break;
-        }
-        case 0:
-        {
-            system("cls");
-            cout << "..." << endl;
-            system("cls");
-            sub_menu();
-        }
-        }
-    } while (opcion != 0);
-}
-
-void submenu_imprimir()
-{
-    int opcion;
-    string nombreTabla;
-    do
-    {
-        cout << "1 - VER TABLAS\n"
-             << "2 - VER TABLAS Y COLUMNAS\n"
-             << "3 - VER TABLAS, COLUMNAS Y TUPLAS\n"
-             << "0 - Volver al submenu" << endl;
-
-        cin >> opcion;
-        getchar();
-        switch (opcion)
-        {
-        case 1:
-        {
-            system("cls");
-            printTables(BD);
-            break;
-        }
-        case 2:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de la TABLA que busca" << endl;
-            cin >> nombreTabla;
-            printMetadata(nombreTabla);
-            break;
-        }
-        case 3:
-        system("cls");
-            cout << "Ingrese el nombre de la TABLA que busca" << endl;
-            cin >> nombreTabla;
-            printDataTable(nombreTabla, "");
-            break;
-        case 0:
-        {
-            system("cls");
-            cout << "..." << endl;
-            sub_menu();
-        }
-        }
-    } while (opcion != 0);
-}
