@@ -73,13 +73,14 @@ void createTable(string nuevaTabla)
         BD = insertar_t;
         return;
     }
+
     Tabla aux = BD;
     Tabla insertar_t = new nodoTablas;
     insertar_t->nombreTabla = nuevaTabla;
     insertar_t->columna = NULL;
     insertar_t->ant = NULL;
     insertar_t->sig = NULL;
-    while (aux != NULL )
+    while (aux != NULL)
     {
         if (aux->nombreTabla == nuevaTabla)
         {
@@ -88,11 +89,21 @@ void createTable(string nuevaTabla)
         }
         aux = aux->sig;
     }
+
     aux = BD;
-    while (aux != NULL){
-        if (aux->sig == NULL){
+    while (aux != NULL)
+    {
+        if (aux->sig == NULL)
+        {
             aux->sig = insertar_t;
             insertar_t->ant = aux;
+            return;
+        }
+        if (aux->ant == NULL && aux->nombreTabla > nuevaTabla)
+        {
+            insertar_t->sig = aux;
+            insertar_t->ant = aux->ant;
+            BD = insertar_t;
             return;
         }
         if (aux->nombreTabla > nuevaTabla)
@@ -452,17 +463,20 @@ void alterCol(string tabla, string nombreCol, string tipoColNuevo, string califi
                             return;
                         }
                         aux2 = aux2->sig;
+
                     } while (aux2 != NULL);
 
                     aux1->nombreColumna = nombreColNuevo;
-                    cout << "Se cambio el nombre de la columna " << nombreCol << endl;
+                    cout << "Se cambio el nombre de la columna " << nombreColNuevo << endl;
+
                     if (tipoColNuevo == "int" && aux1->tipo_dato == false && aux1->filas == NULL)
                     {
                         aux1->tipo_dato = true;
                     }
-                    
+
                     if (tipoColNuevo == "string" && aux1->tipo_dato == true && aux1->filas != NULL)
                     {
+                        aux1->tipo_dato = false;
                         filas convertidor = aux1->filas;
                         while (convertidor != NULL)
                         {
@@ -473,6 +487,33 @@ void alterCol(string tabla, string nombreCol, string tipoColNuevo, string califi
                             convertidor = convertidor->abajo;
                         }
                     }
+
+                    if (calificadorColNuevo == "primary_key")
+                    {
+                        aux1->primary_key = true;
+                        aux1->nn = false;
+                    }
+                    else
+                    {
+                        if (calificadorColNuevo == "nn")
+                        {
+                            aux1->primary_key = false;
+                            aux1->nn = true;
+                        }
+                        else
+                        {
+                            if (calificadorColNuevo == "any")
+                            {
+                                aux1->primary_key = false;
+                                aux1->nn = false;
+                            }
+                            else
+                            {
+                                cout << "NO se reconoce el nuevo calificador..." << endl;
+                            }
+                        }
+                    }
+
                     return;
                 }
                 aux1 = aux1->sig;
@@ -480,6 +521,7 @@ void alterCol(string tabla, string nombreCol, string tipoColNuevo, string califi
             aux = aux->sig;
         }
         cout << "No existe el nombre de columna ingresado" << endl;
+        return;
     }
     cout << "No existe.. " << tabla << endl;
 }
@@ -582,7 +624,9 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
         nuevo->dato_string = "";
         string valor = "";
         valor = valoresTupla.substr(0, valoresTupla.find(limite));
+        // cout << "valores tupla -> " << valoresTupla << endl;
         valoresTupla.erase(0, valoresTupla.find(limite) + 1);
+        // cout << "valores tupla despues -> " << valoresTupla << endl;
 
         if (aux1->primary_key == true)
         {
@@ -630,6 +674,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
             }
         }
 
+        cout << endl
+             << aux1->nombreColumna << endl;
         if (aux1->tipo_dato == true)
         {
             int nuevoValor = stoi(valor);
@@ -695,9 +741,9 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
     cout << "Se ha creaado una nueva TUPLA" << endl;
 }
 
-/*
 void deleteTupla(string nombreTabla, string condicionEliminar)
 {
+
     string valorColumna;
     string valorTupla;
     string vacio = "";
@@ -705,14 +751,14 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
     string mayor = ">";
     string menor = "<";
     string distinto = "<>";
-    int condicion;
+    int condicion_;
     int no_encontrado = 999999;
 
-    if (condicionEliminar.find(igual) < no_encontrado)
+    if (condicionEliminar.find(distinto) < no_encontrado)
     {
-        valorColumna = condicionEliminar.substr(0, condicionEliminar.find(igual));
-        valorTupla = condicionEliminar.substr(condicionEliminar.find(igual) + 1);
-        condicion = 1;
+        valorColumna = condicionEliminar.substr(0, condicionEliminar.find(distinto));
+        valorTupla = condicionEliminar.substr(condicionEliminar.find(distinto) + 2);
+        condicion_ = 1;
     }
     else
     {
@@ -720,7 +766,7 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
         {
             valorColumna = condicionEliminar.substr(0, condicionEliminar.find(mayor));
             valorTupla = condicionEliminar.substr(condicionEliminar.find(mayor) + 1);
-            condicion = 2;
+            condicion_ = 2;
         }
         else
         {
@@ -728,24 +774,21 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
             {
                 valorColumna = condicionEliminar.substr(0, condicionEliminar.find(menor));
                 valorTupla = condicionEliminar.substr(condicionEliminar.find(menor) + 1);
-                condicion = 3;
+                condicion_ = 3;
             }
-
             else
             {
-                if (condicionEliminar.find(distinto) < no_encontrado)
+                if (condicionEliminar.find(igual) < no_encontrado)
                 {
-                    valorColumna = condicionEliminar.substr(0, condicionEliminar.find(distinto));
-                    valorTupla = condicionEliminar.substr(condicionEliminar.find(distinto) + 1);
-                    condicion = 4;
+                    valorColumna = condicionEliminar.substr(0, condicionEliminar.find(igual));
+                    valorTupla = condicionEliminar.substr(condicionEliminar.find(igual) + 1);
+                    condicion_ = 4;
                 }
                 else
                 {
                     if (condicionEliminar.find(vacio) < no_encontrado)
                     {
-                        valorColumna = condicionEliminar.substr(0, condicionEliminar.find(vacio));
-                        valorTupla = condicionEliminar.substr(condicionEliminar.find(vacio) + 1);
-                        condicion = 5;
+                        condicion_ = 5;
                     }
                 }
             }
@@ -784,7 +827,9 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
         if (aux1->nombreColumna == valorColumna)
         {
             cout << aux1->nombreColumna << endl;
+
             cout << "Existe la columna..." << aux1->nombreColumna << endl;
+
             if (aux1->filas == NULL)
             {
                 cout << "No existen filas..." << endl;
@@ -797,221 +842,218 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
         if (aux1 == NULL)
         {
             cout << "No existe la columna..." << valorColumna << endl;
-        }
-    }
-
-    /*filas aux2 = aux1->filas;
-    if (aux1->filas != NULL)
-    {
-        while (aux2 != NULL)
-        {
-
-            if (aux1->tipo_dato == true)
-            {
-                filas convertidor = aux1->filas;
-
-                    while (convertidor != NULL)
-                    {
-                        stringstream ss;
-                        ss << convertidor->dato_int;
-                        convertidor->dato_int = NULL;
-                        convertidor->dato_string = ss.str();
-                        convertidor = convertidor->abajo;
-                    }
-                break;
-            }
-
-            else
-            {
-                if (aux2->dato_string == valorTupla)
-                {
-                    cout << "dato string" << endl;
-                    cout << aux2->dato_string << endl;
-                    break;
-                }
-            }
-
-            if (aux1->nn == true)
-            {
-                if (valorTupla == "")
-                {
-                    cout << "El valor ingresado es vacio..." << endl;
-                    return;
-                }
-            }
-
-            aux2 = aux2->abajo;
-
-            if (aux2 == NULL)
-            {
-                cout << "No existe la tupla ingresada..." << valorTupla << endl;
-                return;
-            }
-        }
-    }
-    switch (condicion)
-    {
-    case 3:
-        filas aux2 = aux1->filas;
-        if (aux1->filas != NULL)
-        {
-            while (aux2 != NULL)
-            {
-
-                if (aux1->tipo_dato == true)
-                {
-                    filas convertidor = aux1->filas;
-
-                    while (convertidor != NULL)
-                    {
-                        stringstream ss;
-                        ss << convertidor->dato_int;
-                        convertidor->dato_int = NULL;
-                        convertidor->dato_string = ss.str();
-                        convertidor = convertidor->abajo;
-                    }
-
-                    break;
-                }
-
-                else
-                {
-                    if (aux2->dato_string < valorTupla)
-                    {
-                        cout << "dato string" << endl;
-                        cout << aux2->dato_string << endl;
-                        break;
-                    }
-                }
-
-                if (aux1->nn == true)
-                {
-                    if (valorTupla == "")
-                    {
-                        cout << "El valor ingresado es vacio..." << endl;
-                        return;
-                    }
-                }
-
-                aux2 = aux2->abajo;
-
-                if (aux2 == NULL)
-                {
-                    cout << "No existe la tupla ingresada..." << valorTupla << endl;
-                    return;
-                }
-            }
-        }
-        // aux2 = aux2->sig;
-
-        columna desconectar = aux->columna;
-        filas borrar = aux2;
-        if (aux2->abajo == NULL)
-        {
-
-            while (desconectar != NULL)
-            {
-                desconectar->filas = borrar;
-                // desconectar->filas->arriba = NULL;
-                //  borrar->abajo = NULL;
-                // borrar = borrar->sig;
-                borrar->sig->ant = borrar->ant;
-                borrar->ant->sig = borrar->sig;
-                borrar->ant = NULL;
-                borrar->sig = NULL;
-                // borrar = NULL;
-                desconectar = desconectar->sig;
-                desconectar = NULL;
-            }
-            // delete desconectar;
-            delete borrar;
-            cout << "Se elimino la fidsdsla con exito..." << endl;
-
             return;
         }
-        else
-        {
-            if (aux2->arriba == NULL && aux2->abajo != NULL)
-            {
-                while (desconectar != NULL)
-                {
-                    desconectar->filas = borrar->abajo;
-                    desconectar->filas->arriba = NULL;
-                    borrar->abajo = NULL;
-                    borrar = borrar->sig;
-                    borrar->ant = NULL;
-                    borrar->sig = NULL;
-                    borrar = NULL;
-                    desconectar = desconectar->sig;
-                    aux1->filas = aux2;
-                    desconectar = NULL;
-                }
-                // delete desconectar;
-                delete borrar;
-                cout << "Se elimino la fila con exito..." << endl;
-            }
-        }
-        break;
     }
-}
 
-void updateTupla(string nombreTabla, string condicionModificar, string columnaModificar, string valorModficar)
-{
-    string valorColumna;
-    string valorTupla;
-    string vacio = "";
-    string igual = "=";
-    string mayor = ">";
-    string menor = "<";
-    string distinto = "<>";
-    int condicion_;
-    int no_encontrado = 999999;
 
-     if (condicionModificar.find(distinto) < no_encontrado)
+    int valorTuplaInt = 0;
+    filas buscar = aux1->filas;
+    if (aux1->tipo_dato == true)
     {
-        valorColumna = condicionModificar.substr(0, condicionModificar.find(distinto));
-        valorTupla = condicionModificar.substr(condicionModificar.find(distinto) + 2);
-        condicion_ = 1;
+        valorTuplaInt = stoi(valorTupla);
+        cout << "cambio int" << valorTupla << endl;
     }
-    else
-    {
-        if (condicionModificar.find(mayor) < no_encontrado)
-        {
-            valorColumna = condicionModificar.substr(0, condicionModificar.find(mayor));
-            valorTupla = condicionModificar.substr(condicionModificar.find(mayor) + 1);
-            condicion_ = 2;
-        }
-        else
-        {
-            if (condicionModificar.find(menor) < no_encontrado)
-            {
-                valorColumna = condicionModificar.substr(0, condicionModificar.find(menor));
-                valorTupla = condicionModificar.substr(condicionModificar.find(menor) + 1);
-                condicion_ = 3;
-            }
-            else
-            {
-                if (condicionModificar.find(igual) < no_encontrado)
-                {
-                    valorColumna = condicionModificar.substr(0, condicionModificar.find(igual));
-                    valorTupla = condicionModificar.substr(condicionModificar.find(igual) + 1);
-                    condicion_ = 4;
-                }
-                else
-                {
-                    if (condicionModificar.find(vacio) < no_encontrado)
-                    {
-                        condicion_ = 5;
-                    }
-                }
-            }
-        }
-    }
-
     
+    cout << valorTuplaInt << endl;
+    switch (condicion_)
+    {
+    case 4:
+        if (aux1->tipo_dato == true)
+        {
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                if (aux1->filas->dato_int == valorTuplaInt)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        columna auxCol = aux1;
+                        filas aux2 = NULL;
+                        while (auxCol->ant != NULL){
+                            auxCol = auxCol->ant;
+                        }
+                        while (true)
+                        {
+                            aux2 = auxCol->filas;
+                            auxCol->filas = NULL;
+                            delete aux2;
+                            auxCol = auxCol->sig;
+                            if (auxCol == NULL)
+                                return;
+                        }
+                    }else
+                    {
+                        cout << "soy puton" << endl;
+                        columna auxCol = aux1;
+                        filas aux2 = NULL;
+                        while (auxCol->ant != NULL){
+                            auxCol = auxCol->ant;
+                        }
+                        while (true)
+                        {
+                            
+                            aux2 = auxCol->filas;
+                            auxCol->filas = aux2->abajo;
+                            aux2->abajo->arriba = NULL;
+                            aux2->abajo = NULL;
+                            delete aux2;
+                            auxCol = auxCol->sig;
+                            if (auxCol == NULL)
+                                break;
+                            
+                        } 
+                        break;
+                    } 
+                }
+                cout << "el valor de la fila -> " << buscar->dato_int << endl << "valorTupla -> " << valorTuplaInt << endl;
+                if (buscar->dato_int == valorTuplaInt)
+                {
+                    cout << "encontre un homosexual" << endl;
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        cout << "aaa" << endl;
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                        
+                    }
+                    
+                }else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    cout << "fin" << endl;
+                    return;
+                }
+                
+            }
+            
+        }else
+        {
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                if (aux1->filas->dato_string == valorTupla)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        columna auxCol = aux1;
+                        filas aux2 = NULL;
+                        while (auxCol->ant != NULL){
+                            auxCol = auxCol->ant;
+                        }
+                        while (true)
+                        {
+                            aux2 = auxCol->filas;
+                            auxCol->filas = NULL;
+                            delete aux2;
+                            auxCol = auxCol->sig;
+                            if (auxCol == NULL)
+                                return;
+                        }
+                    }else
+                    {
+                        cout << "soy puton" << endl;
+                        columna auxCol = aux1;
+                        filas aux2 = NULL;
+                        while (auxCol->ant != NULL){
+                            auxCol = auxCol->ant;
+                        }
+                        while (true)
+                        {
+                            
+                            aux2 = auxCol->filas;
+                            auxCol->filas = aux2->abajo;
+                            aux2->abajo->arriba = NULL;
+                            aux2->abajo = NULL;
+                            delete aux2;
+                            auxCol = auxCol->sig;
+                            if (auxCol == NULL)
+                                break;
+                            
+                        } 
+                        break;
+                    } 
+                }
+                cout << "el valor de la fila -> " << buscar->dato_int << endl << "valorTupla -> " << valorTuplaInt << endl;
+                if (buscar->dato_string == valorTupla)
+                {
+                    cout << "encontre un homosexual" << endl;
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        cout << "aaa" << endl;
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                        
+                    }
+                    
+                }else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    cout << "fin" << endl;
+                    return;
+                }
+                
+            }
+        }
+        
+        
+    }
 }
 
-*/
 //  ------------------------------ FUNCIONES ENTRE TABLAS ------------------------------
 void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
 {
@@ -1127,7 +1169,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
         }
         copiarColumna = copiarColumna->sig;
     }
-    //cout << columnas << endl;
+    // cout << columnas << endl;
     copiarColumna = aux->columna;
     while (true)
     {
@@ -1154,7 +1196,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
             tipodato = "string";
         }
         addCol(nombreTabla2, copiarColumna->nombreColumna, tipodato, calificador);
-        //cout << "cree la columna " << copiarColumna->nombreColumna << endl;
+        // cout << "cree la columna " << copiarColumna->nombreColumna << endl;
         if (copiarColumna->sig == NULL)
         {
             break;
@@ -1176,7 +1218,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
             {
                 condicionColumna = aux1;
                 buscar = aux1->filas;
-                //cout << aux1->nombreColumna << endl;
+                // cout << aux1->nombreColumna << endl;
                 cout << "Existe la columna..." << aux1->nombreColumna << endl;
                 if (aux1->filas == NULL)
                 {
@@ -1199,7 +1241,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
         condicionColumna = aux1;
     }
 
-    //cout << condicion_ << endl;
+    // cout << condicion_ << endl;
     switch (condicion_)
     {
     case 1:
@@ -1646,7 +1688,7 @@ void selectWhere(string nombreTabla1, string condicion, string nombreTabla2)
             }
             while (true)
             {
-                //cout << "el valor es... " << val << endl;
+                // cout << "el valor es... " << val << endl;
                 if (aux1->tipo_dato)
                 {
                     stringstream ss;
@@ -1747,11 +1789,13 @@ void printMetadata(string nombreTabla)
                 }
                 if (aux1->tipo_dato == true)
                 {
-                    cout << "El dato es INTEGER" << endl << endl;
+                    cout << "El dato es INTEGER" << endl
+                         << endl;
                 }
                 else
                 {
-                    cout << "El dato es STRING" << endl << endl;
+                    cout << "El dato es STRING" << endl
+                         << endl;
                 }
                 aux1 = aux1->sig;
             } while (aux1 != NULL);
@@ -1844,45 +1888,61 @@ void printDataTable(string nombreTabla, string ordenadaPor)
     cout << endl;
 }
 
-/*
 int main()
 {
     system("cls");
-    createTable("pescados");
-    createTable("tipo_arboles");
-    createTable("personas");
-    createTable("hi");
-    // cout << "nombre de la tabla" << endl;
+    createTable("alo");
+    createTable("diente");
+    createTable("caracol");
+    createTable("mariposa");
+    createTable("arbol");
 
-    // imprimir(BD);
-    // imprimir(BD);
-    // addCol("alo", "queso", "", "");
-    addCol("personas", "cedula", "int", "primary_key");
-    addCol("personas", "nombres", "string", "nn");
-    addCol("personas", "apellido", "string", "nn");
-    addCol("personas", "edad", "string", "nn");
-    // addCol("personas", "nombrePerro", "string", "nn");
-    // dropTable("hi"); printTables(BD);
-    //  addCol("pescados", "naranja", "", "primary_key");
-    //  addCol("alo", "soca", "int", "nn");
-    //  addCol("alo", "quiesoto", "int", "nn");
-    //  alterCol("alo", "quesoto", "", "primary_key", "sioto");
+    addCol("alo", "cedula", "int", "nn");
+    addCol("alo", "nombres", "string", "nn");
+    addCol("alo", "apellidos", "string", "nn");
+
+    insertInto("alo", "cedula:nombres:apellidos", "2:esteban:quito");
+    insertInto("alo", "cedula:nombres:apellidos", "7:mili:vairo");
+    insertInto("alo", "cedula:nombres:apellidos", "5:jose:antonio");
+    insertInto("alo", "cedula:nombres:apellidos", "7:luis:putarraco");
+    insertInto("alo", "cedula:nombres:apellidos", "4:jose:manuel");
+    printDataTable("alo", "");
+
+    deleteTupla("alo", "nombres=jose");
+    // alterCol("alo", "cedula", "string", "any", "modifique");
+    printDataTable("alo", "");
+
+    // createTable("alo");
+    // printTables(BD);
+    //  imprimir(BD);
+    //  imprimir(BD);
+    //  addCol("alo", "queso", "", "");
+    //
+    // addCol("personas", "nombres", "string", "nn");
+    // addCol("personas", "apellido", "string", "nn");
+    // addCol("personas", "edad", "string", "nn");
+    //  addCol("personas", "nombrePerro", "string", "nn");
+    //  dropTable("hi"); printTables(BD);
+    //   addCol("pescados", "naranja", "", "primary_key");
+    //   addCol("alo", "soca", "int", "nn");
+    //   addCol("alo", "quiesoto", "int", "nn");
+
     //  system("cls");
     //  cout << "llegue al print" << endl
     //       << endl
-    insertInto("personas", "cedula:nombres:apellido:edad", "1:esteban:quito:25");
-    insertInto("personas", "cedula:nombres:apellido:edad", "7:mili:vairo:19");
-    insertInto("personas", "cedula:nombres:apellido:edad", "2:jose:antonio:23"); //       << endl;
+    // insertInto("personas", "cedula:nombres:apellido:edad", "1:esteban:quito:25");
+    // insertInto("personas", "cedula:nombres:apellido:edad", "7:mili:vairo:19");
+    // insertInto("personas", "cedula:nombres:apellido:edad", "2:jose:antonio:23"); //       << endl;
 
     // insertInto("personas", "cedula:nombres:apellidos:edad", "3:decime:quesi:57");
     //  dropCol("personas", "nombres");
-    // deleteTupla("personas", "apellido<quito");
-    selectWhere("personas", "", "mascotas");
+    //
+    // selectWhere("personas", "", "mascotas");
     // selectWhere("personas", "nombres=jose", "mascotas");
     // updateTupla("personas", "cedula=7", "apellido", "vaioro");
-    //   printTables(BD);
-    //  printMetadata("mascotas");
-    printDataTable("mascotas", "");
+    //
+
+    // printDataTable("mascotas", "");
     //  printDataTable("personas", "");
     //
     //  cout << endl
@@ -1897,13 +1957,13 @@ int main()
     // imprimir(BD);
 
     return 0;
-}*/
+}
 
 //  ------------------------------ MENUS ------------------------------
-int main()
+/*int main()
 {
     system("cls");
-    
+
     int opcion;
 
     cout << "BIENVENIDO :D\n"
@@ -2139,7 +2199,7 @@ void submenu_tuplas()
             system("cls");
             cout << "Ingrese el nombre de la TABLA" << endl;
             cin >> nombreTabla;
-            cout << "Ingrese el los nombres de las columnas separados por dos puntos (:)" << endl 
+            cout << "Ingrese el los nombres de las columnas separados por dos puntos (:)" << endl
             << "ej. columna1:columna2:columna3" << endl;
             cin >> nombreColumna;
             cout << "Ingrese el los valores de las columnas separados por dos puntos (:)" << endl
@@ -2207,3 +2267,4 @@ void submenu_imprimir()
         }
     } while (opcion != 0);
 }
+*/
