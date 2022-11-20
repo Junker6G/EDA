@@ -85,4 +85,4 @@ void imprimir(Lista L)
         cout << "|" << L->info << "| - ";
     }
     cout << "#" << endl;
-}
+} 
