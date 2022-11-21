@@ -57,6 +57,7 @@ void sub_menu();
 void submenu_tablas();
 void submenu_columnas();
 void submenu_tuplas();
+void submenu_operaciones_tablas();
 void submenu_imprimir();
 
 //  ------------------------------ FUNCIONES TABLAS ------------------------------
@@ -479,7 +480,7 @@ void addCol(string nomTabla, string nombreCol, string tipoCol, string calificado
                         ultimoNodoVacio = nodoVacio;
                         auxFilas = auxFilas->abajo;
                     }
-                    cout << "awaken" << endl;
+                    // cout << "awaken" << endl;
                 }
             }
             return;
@@ -881,8 +882,8 @@ void insertInto(string nombreTabla, string columnasTupla, string valoresTupla)
             }
         }
 
-        cout << endl
-             << aux1->nombreColumna << endl;
+        /*cout << endl
+             << aux1->nombreColumna << endl;*/
         if (aux1->tipo_dato == true)
         {
             int nuevoValor = stoi(valor);
@@ -1004,7 +1005,7 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
     Tabla aux = BD;
     columna aux1 = aux->columna;
     int valorTuplaInt = 0;
-    cout << "comparador -> " << condicion_ << endl;
+    // cout << "comparador -> " << condicion_ << endl;
 
     if (aux == NULL)
     {
@@ -1034,7 +1035,7 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
 
     if (condicion_ == 5)
     {
-        cout << "caso 5" << endl;
+        // cout << "caso 5" << endl;
         filas borrar = NULL;
         filas buscar = aux1->filas;
 
@@ -1110,63 +1111,641 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
     if (aux1->tipo_dato == true)
     {
         valorTuplaInt = stoi(valorTupla);
-        cout << "cambio int" << valorTupla << endl;
+        // cout << "cambio int" << valorTupla << endl;
     }
 
-    cout << valorTuplaInt << endl;
+    // cout << valorTuplaInt << endl;
     switch (condicion_)
     {
-    case 1:
+    case 2:
         if (aux1->tipo_dato == true)
         {
-            filas buscar = aux1->filas;
-            while (true)
-            {
-                cout << "check" << endl;
-                if (aux1->filas->dato_int != valorTuplaInt)
-                {
-                    if (aux1->filas->abajo == NULL)
-                    {
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-                            aux2 = auxCol->filas;
-                            auxCol->filas = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                return;
-                        }
-                    }
-                    else
-                    {
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
 
-                            aux2 = auxCol->filas;
-                            auxCol->filas = aux2->abajo;
-                            aux2->abajo->arriba = NULL;
-                            aux2->abajo = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                break;
+            // cout << "check" << endl;
+            if (aux1->filas->dato_int > valorTuplaInt)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
                         }
                     }
                 }
-                cout << "el valor de la fila -> " << buscar->dato_int << endl
-                     << "valorTupla -> " << valorTuplaInt << endl;
+            }
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                /*cout << "el valor de la fila -> " << buscar->dato_int << endl
+                     << "valorTupla -> " << valorTuplaInt << endl;*/
+                if (buscar->dato_int > valorTuplaInt)
+                {
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    // cout << "fin" << endl;
+                    return;
+                }
+            }
+        }
+        else
+        {
+            if (aux1->filas->dato_string > valorTupla)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                /*cout << "el valor de la fila -> " << buscar->dato_string << endl
+                     << "valorTupla -> " << valorTupla << endl;*/
+                if (buscar->dato_string > valorTupla)
+                {
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    // cout << "fin" << endl;
+                    return;
+                }
+            }
+        }
+        break;
+    case 4:
+        if (aux1->tipo_dato == true)
+        {
+
+            // cout << "check" << endl;
+            if (aux1->filas->dato_int == valorTuplaInt)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                /*cout << "el valor de la fila -> " << buscar->dato_int << endl
+                     << "valorTupla -> " << valorTuplaInt << endl;*/
+                if (buscar->dato_int == valorTuplaInt)
+                {
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    // cout << "fin" << endl;
+                    return;
+                }
+            }
+        }
+        else
+        {
+            if (aux1->filas->dato_string == valorTupla)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                /*cout << "el valor de la fila -> " << buscar->dato_string << endl
+                     << "valorTupla -> " << valorTupla << endl;*/
+                if (buscar->dato_string == valorTupla)
+                {
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    // cout << "fin" << endl;
+                    return;
+                }
+            }
+        }
+        break;
+    case 3:
+        if (aux1->tipo_dato == true)
+        {
+
+            // cout << "check" << endl;
+            if (aux1->filas->dato_int < valorTuplaInt)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                /*cout << "el valor de la fila -> " << buscar->dato_int << endl
+                     << "valorTupla -> " << valorTuplaInt << endl;*/
+                if (buscar->dato_int < valorTuplaInt)
+                {
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    // cout << "fin" << endl;
+                    return;
+                }
+            }
+        }
+        else
+        {
+            if (aux1->filas->dato_string < valorTupla)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                /*cout << "el valor de la fila -> " << buscar->dato_string << endl
+                     << "valorTupla -> " << valorTupla << endl;*/
+                if (buscar->dato_string < valorTupla)
+                {
+                    filas aux2 = buscar;
+                    while (aux2->ant != NULL)
+                    {
+                        aux2 = aux2->ant;
+                    }
+                    filas borrar = NULL;
+                    while (true)
+                    {
+                        borrar = aux2;
+                        if (aux2->abajo != NULL)
+                        {
+                            aux2->abajo->arriba = aux2->arriba;
+                            aux2->arriba->abajo = aux2->abajo;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        else
+                        {
+                            aux2->arriba->abajo = NULL;
+                            aux2->abajo = NULL;
+                            aux2->arriba = NULL;
+                        }
+                        aux2 = aux2->sig;
+                        delete borrar;
+                        if (aux2 == NULL)
+                        {
+                            buscar = aux1->filas;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    buscar = buscar->abajo;
+                }
+                if (buscar == NULL)
+                {
+                    // cout << "fin" << endl;
+                    return;
+                }
+            }
+        }
+        break;
+    case 1:
+        if (aux1->tipo_dato == true)
+        {
+
+            // cout << "check" << endl;
+            if (aux1->filas->dato_int != valorTuplaInt)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            filas buscar = aux1->filas;
+            while (true)
+            {
+                /*cout << "el valor de la fila -> " << buscar->dato_int << endl
+                     << "valorTupla -> " << valorTuplaInt << endl;*/
                 if (buscar->dato_int != valorTuplaInt)
                 {
                     filas aux2 = buscar;
@@ -1206,64 +1785,61 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
                 }
                 if (buscar == NULL)
                 {
-                    cout << "fin" << endl;
+                    // cout << "fin" << endl;
                     return;
                 }
             }
         }
         else
         {
+            if (aux1->filas->dato_string != valorTupla)
+            {
+                if (aux1->filas->abajo == NULL)
+                {
+                    columna auxCol = aux1;
+                    filas aux2 = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        aux2 = auxCol->filas;
+                        auxCol->filas = NULL;
+                        delete aux2;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                            return;
+                    }
+                }
+                else
+                {
+                    columna auxCol = aux1;
+                    filas borrar = NULL;
+                    while (auxCol->ant != NULL)
+                    {
+                        auxCol = auxCol->ant;
+                    }
+                    while (true)
+                    {
+                        borrar = auxCol->filas;
+                        auxCol->filas = borrar->abajo;
+                        borrar->abajo->arriba = NULL;
+                        borrar->abajo = NULL;
+                        auxCol = auxCol->sig;
+                        if (auxCol == NULL)
+                        {
+                            // cout << "chau" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
             filas buscar = aux1->filas;
             while (true)
             {
-                cout << "check" << endl;
-                if (aux1->filas->dato_string != valorTupla)
-                {
-                    if (aux1->filas->abajo == NULL)
-                    {
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-                            aux2 = auxCol->filas;
-                            auxCol->filas = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                return;
-                        }
-                    }
-                    else
-                    {
-                        cout << "aaaa" << endl;
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-
-                            aux2 = auxCol->filas;
-                            auxCol->filas = aux2->abajo;
-                            aux2->abajo->arriba = NULL;
-                            aux2->abajo = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                break;
-                        }
-                        buscar = aux1->filas;
-                        continue;
-                    }
-                }
-                cout << "el valor de la fila -> " << buscar->dato_string << endl
-                     << "valorTupla -> " << valorTupla << endl;
+                /*cout << "el valor de la fila -> " << buscar->dato_string << endl
+                     << "valorTupla -> " << valorTupla << endl;*/
                 if (buscar->dato_string != valorTupla)
                 {
                     filas aux2 = buscar;
@@ -1309,586 +1885,660 @@ void deleteTupla(string nombreTabla, string condicionEliminar)
             }
         }
         break;
-    case 2:
-        if (aux1->tipo_dato == true)
-        {
-            filas buscar = aux1->filas;
-            while (true)
-            {
-                cout << "check" << endl;
-                if (aux1->filas->dato_int > valorTuplaInt)
-                {
-                    if (aux1->filas->abajo == NULL)
-                    {
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-                            aux2 = auxCol->filas;
-                            auxCol->filas = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                return;
-                        }
-                    }
-                    else
-                    {
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
+    }
+}
 
-                            aux2 = auxCol->filas;
-                            auxCol->filas = aux2->abajo;
-                            aux2->abajo->arriba = NULL;
-                            aux2->abajo = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                break;
-                        }
-                    }
-                }
-                cout << "el valor de la fila -> " << buscar->dato_int << endl
-                     << "valorTupla -> " << valorTuplaInt << endl;
-                if (buscar->dato_int > valorTuplaInt)
-                {
-                    filas aux2 = buscar;
-                    while (aux2->ant != NULL)
-                    {
-                        aux2 = aux2->ant;
-                    }
-                    filas borrar = NULL;
-                    while (true)
-                    {
-                        borrar = aux2;
-                        if (aux2->abajo != NULL)
-                        {
-                            aux2->abajo->arriba = aux2->arriba;
-                            aux2->arriba->abajo = aux2->abajo;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        else
-                        {
-                            aux2->arriba->abajo = NULL;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        aux2 = aux2->sig;
-                        delete borrar;
-                        if (aux2 == NULL)
-                        {
-                            buscar = aux1->filas;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    buscar = buscar->abajo;
-                }
-                if (buscar == NULL)
-                {
-                    cout << "fin" << endl;
-                    return;
-                }
-            }
+void updateTuplas(string nombreTabla, string condicionModificar, string columnaModificar, string valorModificar)
+{
+    string valorColumna;
+    string valorTupla;
+    string vacio = "";
+    string igual = "=";
+    string mayor = ">";
+    string menor = "<";
+    string distinto = "<>";
+    int condicion_;
+    int no_encontrado = 999999;
+
+    if (condicionModificar.find(distinto) < no_encontrado)
+    {
+        valorColumna = condicionModificar.substr(0, condicionModificar.find(distinto));
+        valorTupla = condicionModificar.substr(condicionModificar.find(distinto) + 2);
+        condicion_ = 1;
+    }
+    else
+    {
+        if (condicionModificar.find(mayor) < no_encontrado)
+        {
+            valorColumna = condicionModificar.substr(0, condicionModificar.find(mayor));
+            valorTupla = condicionModificar.substr(condicionModificar.find(mayor) + 1);
+            condicion_ = 2;
         }
         else
         {
-            filas buscar = aux1->filas;
-            while (true)
+            if (condicionModificar.find(menor) < no_encontrado)
             {
-                cout << "check" << endl;
-                if (aux1->filas->dato_string > valorTupla)
+                valorColumna = condicionModificar.substr(0, condicionModificar.find(menor));
+                valorTupla = condicionModificar.substr(condicionModificar.find(menor) + 1);
+                condicion_ = 3;
+            }
+            else
+            {
+                if (condicionModificar.find(igual) < no_encontrado)
                 {
-                    if (aux1->filas->abajo == NULL)
-                    {
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-                            aux2 = auxCol->filas;
-                            auxCol->filas = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                return;
-                        }
-                    }
-                    else
-                    {
-                        cout << "aaaa" << endl;
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-
-                            aux2 = auxCol->filas;
-                            auxCol->filas = aux2->abajo;
-                            aux2->abajo->arriba = NULL;
-                            aux2->abajo = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                break;
-                        }
-                        buscar = aux1->filas;
-                        continue;
-                    }
-                }
-                cout << "el valor de la fila -> " << buscar->dato_string << endl
-                     << "valorTupla -> " << valorTupla << endl;
-                if (buscar->dato_string > valorTupla)
-                {
-                    filas aux2 = buscar;
-                    while (aux2->ant != NULL)
-                    {
-                        aux2 = aux2->ant;
-                    }
-                    filas borrar = NULL;
-                    while (true)
-                    {
-                        borrar = aux2;
-                        if (aux2->abajo != NULL)
-                        {
-                            aux2->abajo->arriba = aux2->arriba;
-                            aux2->arriba->abajo = aux2->abajo;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        else
-                        {
-                            aux2->arriba->abajo = NULL;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        aux2 = aux2->sig;
-                        delete borrar;
-                        if (aux2 == NULL)
-                        {
-                            buscar = aux1->filas;
-                            break;
-                        }
-                    }
+                    valorColumna = condicionModificar.substr(0, condicionModificar.find(igual));
+                    valorTupla = condicionModificar.substr(condicionModificar.find(igual) + 1);
+                    condicion_ = 4;
                 }
                 else
                 {
-                    buscar = buscar->abajo;
-                }
-                if (buscar == NULL)
-                {
-                    cout << "fin" << endl;
-                    return;
+                    if (condicionModificar.find(vacio) < no_encontrado)
+                    {
+                        condicion_ = 5;
+                    }
                 }
             }
         }
-        break;
-    case 3:
-        if (aux1->tipo_dato == true)
+    }
+
+    Tabla aux = BD;
+    columna aux1 = aux->columna;
+    if (aux == NULL)
+    {
+        cout << "No existen tablas..." << endl;
+        return;
+    }
+
+    while (aux != NULL)
+    {
+        if (aux->nombreTabla == nombreTabla)
         {
-            filas buscar = aux1->filas;
-            while (true)
+            if (aux->columna == NULL)
             {
-                cout << "check1" << endl;
-                if (aux1->filas->dato_int < valorTuplaInt)
-                {
-                    if (aux1->filas->abajo == NULL)
-                    {
-                        cout << "check3" << endl;
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-                            aux2 = auxCol->filas;
-                            auxCol->filas = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                return;
-                        }
-                    }
-                    else
-                    {
-                        cout << "check2" << endl;
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-
-                            aux2 = auxCol->filas;
-                            auxCol->filas = aux2->abajo;
-                            aux2->abajo->arriba = NULL;
-                            aux2->abajo = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                break;
-                        }
-                    }
-                }
-                cout << "el valor de la fila -> " << buscar->dato_int << endl
-                     << "valorTupla -> " << valorTuplaInt << endl;
-                if (buscar->dato_int < valorTuplaInt)
-                {
-                    filas aux2 = buscar;
-                    while (aux2->ant != NULL)
-                    {
-                        aux2 = aux2->ant;
-                    }
-                    filas borrar = NULL;
-                    while (true)
-                    {
-                        borrar = aux2;
-                        if (aux2->abajo != NULL)
-                        {
-                            aux2->abajo->arriba = aux2->arriba;
-                            aux2->arriba->abajo = aux2->abajo;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        else
-                        {
-                            aux2->arriba->abajo = NULL;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        aux2 = aux2->sig;
-                        delete borrar;
-                        if (aux2 == NULL)
-                        {
-                            buscar = aux1->filas;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    buscar = buscar->abajo;
-                }
-                if (buscar == NULL)
-                {
-                    cout << "fin" << endl;
-                    return;
-                }
+                cout << "No existen columnas..." << endl;
+                return;
             }
+            aux1 = aux->columna;
+            break;
         }
-        else
+        aux = aux->sig;
+        if (aux == NULL)
         {
-            filas buscar = aux1->filas;
-            while (true)
-            {
-                cout << "check" << endl;
-                if (aux1->filas->dato_string < valorTupla)
-                {
-                    if (aux1->filas->abajo == NULL)
-                    {
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-                            aux2 = auxCol->filas;
-                            auxCol->filas = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                return;
-                        }
-                    }
-                    else
-                    {
-                        cout << "aaaa" << endl;
-                        columna auxCol = aux1;
-                        filas aux2 = NULL;
-                        while (auxCol->ant != NULL)
-                        {
-                            auxCol = auxCol->ant;
-                        }
-                        while (true)
-                        {
-
-                            aux2 = auxCol->filas;
-                            auxCol->filas = aux2->abajo;
-                            aux2->abajo->arriba = NULL;
-                            aux2->abajo = NULL;
-                            delete aux2;
-                            auxCol = auxCol->sig;
-                            if (auxCol == NULL)
-                                break;
-                        }
-                        buscar = aux1->filas;
-                        continue;
-                    }
-                }
-                cout << "el valor de la fila -> " << buscar->dato_string << endl
-                     << "valorTupla -> " << valorTupla << endl;
-                if (buscar->dato_string < valorTupla)
-                {
-                    filas aux2 = buscar;
-                    while (aux2->ant != NULL)
-                    {
-                        aux2 = aux2->ant;
-                    }
-                    filas borrar = NULL;
-                    while (true)
-                    {
-                        borrar = aux2;
-                        if (aux2->abajo != NULL)
-                        {
-                            aux2->abajo->arriba = aux2->arriba;
-                            aux2->arriba->abajo = aux2->abajo;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        else
-                        {
-                            aux2->arriba->abajo = NULL;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
-                        }
-                        aux2 = aux2->sig;
-                        delete borrar;
-                        if (aux2 == NULL)
-                        {
-                            buscar = aux1->filas;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    buscar = buscar->abajo;
-                }
-                if (buscar == NULL)
-                {
-                    cout << "fin" << endl;
-                    return;
-                }
-            }
+            cout << "No existe la tabla..." << nombreTabla << endl;
+            return;
         }
-        break;
+    }
+    while (aux1 != NULL)
+    {
+
+        if (aux1->nombreColumna == valorColumna)
+        {
+            cout << aux1->nombreColumna << endl;
+
+            cout << "Existe la columna..." << aux1->nombreColumna << endl;
+
+            if (aux1->filas == NULL)
+            {
+                cout << "No existen filas..." << endl;
+                return;
+            }
+            break;
+        }
+        aux1 = aux1->sig;
+
+        if (aux1 == NULL)
+        {
+            cout << "No existe la columna..." << valorColumna << endl;
+            return;
+        }
+    }
+
+    filas buscar = aux1->filas;
+    int valorTuplaInt = 0;
+    if (aux1->tipo_dato == true)
+    {
+        valorTuplaInt = stoi(valorTupla);
+        cout << "cambio int " << valorTupla << endl;
+    }
+
+    switch (condicion_)
+    {
     case 4:
+    {
+        filas buscar = aux1->filas;
         if (aux1->tipo_dato == true)
         {
-
-            cout << "check" << endl;
-            if (aux1->filas->dato_int == valorTuplaInt)
-            {
-                if (aux1->filas->abajo == NULL)
-                {
-                    columna auxCol = aux1;
-                    filas aux2 = NULL;
-                    while (auxCol->ant != NULL)
-                    {
-                        auxCol = auxCol->ant;
-                    }
-                    while (true)
-                    {
-                        aux2 = auxCol->filas;
-                        auxCol->filas = NULL;
-                        delete aux2;
-                        auxCol = auxCol->sig;
-                        if (auxCol == NULL)
-                            return;
-                    }
-                }
-                else
-                {
-                    columna auxCol = aux1;
-                    filas borrar = NULL;
-                    while (auxCol->ant != NULL)
-                    {
-                        auxCol = auxCol->ant;
-                    }
-                    while (true)
-                    {
-                        borrar = auxCol->filas;
-                        auxCol->filas = borrar->abajo;
-                        borrar->abajo->arriba = NULL;
-                        borrar->abajo = NULL;
-                        auxCol = auxCol->sig;
-                        if (auxCol == NULL)
-                        {
-                            cout << "chau" << endl;
-                            break;
-                        }
-                    }
-                }
-            }
-            filas buscar = aux1->filas;
             while (true)
             {
-                cout << "el valor de la fila -> " << buscar->dato_int << endl
-                     << "valorTupla -> " << valorTuplaInt << endl;
+                if (aux1->filas->dato_int != valorTuplaInt)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
                 if (buscar->dato_int == valorTuplaInt)
                 {
-                    filas aux2 = buscar;
-                    while (aux2->ant != NULL)
+                    // cout << "Se encontro la fila a modificar..." << endl;
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
                     {
-                        aux2 = aux2->ant;
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
                     }
-                    filas borrar = NULL;
                     while (true)
                     {
-                        borrar = aux2;
-                        if (aux2->abajo != NULL)
+                        if (colModificar->nombreColumna == columnaModificar)
                         {
-                            aux2->abajo->arriba = aux2->arriba;
-                            aux2->arriba->abajo = aux2->abajo;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
+                            // cout << "Se encontro la columna a modificar..." << endl;
+                            break;
                         }
                         else
                         {
-                            aux2->arriba->abajo = NULL;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
                         }
-                        aux2 = aux2->sig;
-                        delete borrar;
-                        if (aux2 == NULL)
+                        if (colModificar == NULL)
                         {
-                            buscar = aux1->filas;
-                            break;
+                            // cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
                         }
                     }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                        // cout << "aaaa" << endl;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                        // cout << "bbbb" << endl;
+                    }
                 }
-                else
-                {
-                    buscar = buscar->abajo;
-                }
+
+                buscar = buscar->abajo;
                 if (buscar == NULL)
                 {
-                    cout << "fin" << endl;
-                    return;
+                    // cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
                 }
             }
         }
         else
         {
-            if (aux1->filas->dato_string == valorTupla)
-            {
-                if (aux1->filas->abajo == NULL)
-                {
-                    columna auxCol = aux1;
-                    filas aux2 = NULL;
-                    while (auxCol->ant != NULL)
-                    {
-                        auxCol = auxCol->ant;
-                    }
-                    while (true)
-                    {
-                        aux2 = auxCol->filas;
-                        auxCol->filas = NULL;
-                        delete aux2;
-                        auxCol = auxCol->sig;
-                        if (auxCol == NULL)
-                            return;
-                    }
-                }
-                else
-                {
-                    columna auxCol = aux1;
-                    filas borrar = NULL;
-                    while (auxCol->ant != NULL)
-                    {
-                        auxCol = auxCol->ant;
-                    }
-                    while (true)
-                    {
-                        borrar = auxCol->filas;
-                        auxCol->filas = borrar->abajo;
-                        borrar->abajo->arriba = NULL;
-                        borrar->abajo = NULL;
-                        auxCol = auxCol->sig;
-                        if (auxCol == NULL)
-                        {
-                            cout << "chau" << endl;
-                            break;
-                        }
-                    }
-                }
-            }
-            filas buscar = aux1->filas;
             while (true)
             {
-                cout << "el valor de la fila -> " << buscar->dato_string << endl
-                     << "valorTupla -> " << valorTupla << endl;
+                if (aux1->filas->dato_string != valorTupla)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
                 if (buscar->dato_string == valorTupla)
                 {
-                    filas aux2 = buscar;
-                    while (aux2->ant != NULL)
+                    cout << "Se encontro la fila a modificar..." << endl;
+                    // asi mando el puntero al inicio???
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
                     {
-                        aux2 = aux2->ant;
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
                     }
-                    filas borrar = NULL;
                     while (true)
                     {
-                        borrar = aux2;
-                        if (aux2->abajo != NULL)
+                        if (colModificar->nombreColumna == columnaModificar)
                         {
-                            aux2->abajo->arriba = aux2->arriba;
-                            aux2->arriba->abajo = aux2->abajo;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
+                            cout << "Se encontro la columna a modificar..." << endl;
+                            break;
                         }
                         else
                         {
-                            aux2->arriba->abajo = NULL;
-                            aux2->abajo = NULL;
-                            aux2->arriba = NULL;
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
                         }
-                        aux2 = aux2->sig;
-                        delete borrar;
-                        if (aux2 == NULL)
+                        if (colModificar == NULL)
                         {
-                            buscar = aux1->filas;
-                            break;
+                            cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
                         }
                     }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                    }
                 }
-                else
-                {
-                    buscar = buscar->abajo;
-                }
+                buscar = buscar->abajo;
                 if (buscar == NULL)
                 {
-                    cout << "fin" << endl;
-                    return;
+                    cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
                 }
             }
         }
-        break;
+    }
+    case 1:
+    {
+        filas buscar = aux1->filas;
+        if (aux1->tipo_dato == true)
+        {
+            while (true)
+            {
+                if (aux1->filas->dato_int != valorTuplaInt)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
+                if (buscar->dato_int != valorTuplaInt)
+                {
+                    // cout << "Se encontro la fila a modificar..." << endl;
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
+                    {
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
+                    }
+                    while (true)
+                    {
+                        if (colModificar->nombreColumna == columnaModificar)
+                        {
+                            // cout << "Se encontro la columna a modificar..." << endl;
+                            break;
+                        }
+                        else
+                        {
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
+                        }
+                        if (colModificar == NULL)
+                        {
+                            // cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
+                        }
+                    }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                        // cout << "aaaa" << endl;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                        // cout << "bbbb" << endl;
+                    }
+                }
+
+                buscar = buscar->abajo;
+                if (buscar == NULL)
+                {
+                    // cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                if (aux1->filas->dato_string != valorTupla)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
+                if (buscar->dato_string != valorTupla)
+                {
+                    cout << "Se encontro la fila a modificar..." << endl;
+                    // asi mando el puntero al inicio???
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
+                    {
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
+                    }
+                    while (true)
+                    {
+                        if (colModificar->nombreColumna == columnaModificar)
+                        {
+                            cout << "Se encontro la columna a modificar..." << endl;
+                            break;
+                        }
+                        else
+                        {
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
+                        }
+                        if (colModificar == NULL)
+                        {
+                            cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
+                        }
+                    }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                    }
+                }
+                buscar = buscar->abajo;
+                if (buscar == NULL)
+                {
+                    cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
+                }
+            }
+        }
+    }
+    case 2:
+    {
+        filas buscar = aux1->filas;
+        if (aux1->tipo_dato == true)
+        {
+            while (true)
+            {
+                if (aux1->filas->dato_int != valorTuplaInt)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
+                if (buscar->dato_int > valorTuplaInt)
+                {
+                    // cout << "Se encontro la fila a modificar..." << endl;
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
+                    {
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
+                    }
+                    while (true)
+                    {
+                        if (colModificar->nombreColumna == columnaModificar)
+                        {
+                            // cout << "Se encontro la columna a modificar..." << endl;
+                            break;
+                        }
+                        else
+                        {
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
+                        }
+                        if (colModificar == NULL)
+                        {
+                            // cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
+                        }
+                    }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                        // cout << "aaaa" << endl;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                        // cout << "bbbb" << endl;
+                    }
+                }
+
+                buscar = buscar->abajo;
+                if (buscar == NULL)
+                {
+                    // cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                if (aux1->filas->dato_string != valorTupla)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
+                if (buscar->dato_string > valorTupla)
+                {
+                    cout << "Se encontro la fila a modificar..." << endl;
+                    // asi mando el puntero al inicio???
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
+                    {
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
+                    }
+                    while (true)
+                    {
+                        if (colModificar->nombreColumna == columnaModificar)
+                        {
+                            cout << "Se encontro la columna a modificar..." << endl;
+                            break;
+                        }
+                        else
+                        {
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
+                        }
+                        if (colModificar == NULL)
+                        {
+                            cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
+                        }
+                    }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                    }
+                }
+                buscar = buscar->abajo;
+                if (buscar == NULL)
+                {
+                    cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
+                }
+            }
+        }
+    }
+    case 3:
+    {
+        filas buscar = aux1->filas;
+        if (aux1->tipo_dato == true)
+        {
+            while (true)
+            {
+                if (aux1->filas->dato_int != valorTuplaInt)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
+                if (buscar->dato_int < valorTuplaInt)
+                {
+                    // cout << "Se encontro la fila a modificar..." << endl;
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
+                    {
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
+                    }
+                    while (true)
+                    {
+                        if (colModificar->nombreColumna == columnaModificar)
+                        {
+                            // cout << "Se encontro la columna a modificar..." << endl;
+                            break;
+                        }
+                        else
+                        {
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
+                        }
+                        if (colModificar == NULL)
+                        {
+                            // cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
+                        }
+                    }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                        // cout << "aaaa" << endl;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                        // cout << "bbbb" << endl;
+                    }
+                }
+
+                buscar = buscar->abajo;
+                if (buscar == NULL)
+                {
+                    // cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                if (aux1->filas->dato_string != valorTupla)
+                {
+                    if (aux1->filas->abajo == NULL)
+                    {
+                        cout << "No existe la fila que busca para modificar..." << endl;
+                        break;
+                    }
+                }
+                if (buscar->dato_string < valorTupla)
+                {
+                    cout << "Se encontro la fila a modificar..." << endl;
+                    // asi mando el puntero al inicio???
+                    filas modificar = buscar;
+                    columna colModificar = aux1;
+                    while (colModificar->ant != NULL)
+                    {
+                        colModificar = colModificar->ant;
+                        modificar = modificar->ant;
+                    }
+                    while (true)
+                    {
+                        if (colModificar->nombreColumna == columnaModificar)
+                        {
+                            cout << "Se encontro la columna a modificar..." << endl;
+                            break;
+                        }
+                        else
+                        {
+                            colModificar = colModificar->sig;
+                            modificar = modificar->sig;
+                        }
+                        if (colModificar == NULL)
+                        {
+                            cout << "NO se encontro la columna a modificar..." << endl;
+                            return;
+                        }
+                    }
+                    if ((colModificar->primary_key || colModificar->nn) && valorModificar == "")
+                    {
+                        cout << "NO se puede insertar un valor nulo en esta columna..." << endl;
+                        return;
+                    }
+                    if (colModificar->tipo_dato)
+                    {
+                        int aux = stoi(valorModificar);
+                        modificar->dato_int = aux;
+                    }
+                    else
+                    {
+                        modificar->dato_string = valorModificar;
+                    }
+                }
+                buscar = buscar->abajo;
+                if (buscar == NULL)
+                {
+                    cout << "No se encontro la fila buscada para modificar..." << endl;
+                    break;
+                }
+            }
+        }
+    }
     }
 }
 
@@ -2752,10 +3402,10 @@ void unionTable(string nombreTabla1, string nombreTabla2, string nombreTabla3)
         {
             auxCol1 = tabla1->columna;
             copiar = auxFilas;
-            cout << "1" << endl;
+            // cout << "1" << endl;
             while (true)
             {
-                cout << "2" << endl;
+                // cout << "2" << endl;
                 if (auxCol1->tipo_dato)
                 {
                     if (copiar->dato_int != empty)
@@ -2824,15 +3474,15 @@ void unionTable(string nombreTabla1, string nombreTabla2, string nombreTabla3)
                     break;
                 }
             }
-            cout << "insertColumna -> " << insertColumna << endl
+            /*cout << "insertColumna -> " << insertColumna << endl
                  << "insertFila -> " << insertFila << endl
-                 << endl;
+                 << endl;*/
             insertInto(nombreTabla3, insertColumna, insertFila);
             insertFila = "";
             auxFilas = auxFilas->abajo;
             if (auxFilas == NULL)
             {
-                cout << "Termine de copiar la primera tabla" << endl;
+                // cout << "Termine de copiar la primera tabla" << endl;
                 break;
             }
         }
@@ -2851,10 +3501,10 @@ void unionTable(string nombreTabla1, string nombreTabla2, string nombreTabla3)
         {
             auxCol2 = tabla1->columna;
             copiar2 = auxFilas2;
-            cout << "1" << endl;
+            // cout << "1" << endl;
             while (true)
             {
-                cout << "2" << endl;
+                // cout << "2" << endl;
                 if (auxCol2->tipo_dato)
                 {
                     if (copiar2->dato_int != empty)
@@ -2903,13 +3553,13 @@ void unionTable(string nombreTabla1, string nombreTabla2, string nombreTabla3)
                 }
                 if (copiar2 == NULL)
                 {
-                    cout << "Termine de copiar2 la tupla" << endl;
+                    // cout << "Termine de copiar2 la tupla" << endl;
                     break;
                 }
             }
-            cout << "insertColumna -> " << insertColumna << endl
+            /*cout << "insertColumna -> " << insertColumna << endl
                  << "insertFila -> " << insertFila2 << endl
-                 << endl;
+                 << endl;*/
             insertInto(nombreTabla3, insertColumna, insertFila2);
             insertFila2 = "";
             auxFilas2 = auxFilas2->abajo;
@@ -2929,9 +3579,8 @@ void unionTable(string nombreTabla1, string nombreTabla2, string nombreTabla3)
     }
 }
 
-void intersectTuplas(string nombreTabla1, string nombreTabla2, string nombreTabla3)
+void intersect(string nombreTabla1, string nombreTabla2, string nombreTabla3)
 {
-
     if (nombreTabla1 == "" || nombreTabla2 == "" || nombreTabla3 == "")
     {
         cout << "ERROR - Uno o varios de los campos es vacio por ende no se puede enfectuar el UNION" << endl;
@@ -3105,99 +3754,504 @@ void intersectTuplas(string nombreTabla1, string nombreTabla2, string nombreTabl
     cout << insertColumna << endl
          << endl;
 
-    auxCol1 = tabla1->columna;
-    filas auxFilas1 = auxCol1->filas;
-    filas auxFilas2 = auxCol2->filas;
-    bool save = false;
-    // Recorre para la siguiente columna
-    cout << "llega hasta aca" << endl;
+    cout << tabla1->nombreTabla << endl
+         << tabla2->nombreTabla << endl;
+    filas buscar1 = tabla1->columna->filas;
+    filas buscar2 = tabla2->columna->filas;
+    columna col = tabla1->columna;
 
-    // Recorre para la siguiente tupla
-    while (true)
+    if (buscar1 == NULL)
     {
-        if (auxCol1->tipo_dato == true)
+        cout << "NO existen filas para realizar el intersect..." << endl;
+        return;
+    }
+
+    while (buscar1 != NULL)
+    {
+        while (buscar2 != NULL)
         {
-            cout << "El tipo de dato a comparar es int" << endl;
-            while (true)
+            if (col->tipo_dato)
             {
-                if (auxFilas1->dato_int == auxFilas2->dato_int)
+                if (buscar1->dato_int == buscar2->dato_int)
                 {
-                    cout << "FILA 1" << endl
-                         << auxFilas1->dato_int << endl
-                         << "FILA 2" << endl
-                         << auxFilas2->dato_int << endl;
-                    filas verFila1 = auxFilas1;
-                    filas verFila2 = auxFilas2;
-                    columna verCol = auxCol1;
-                    while (verCol != NULL)
+                    cout << buscar1->dato_int << " - coincide con - " << buscar2->dato_int << endl;
+                    filas verificar1 = buscar1;
+                    filas verificar2 = buscar2;
+                    columna verificarCol = col;
+                    while (verificarCol != NULL)
                     {
-                        cout << verCol->nombreColumna << " <--- " << endl;
-                        if (verCol->tipo_dato)
+                        if (verificarCol->tipo_dato)
                         {
-                            cout << "a verFila1 -> " << verFila1->dato_int << endl
-                                 << "a verFila2 -> " << verFila2->dato_int << endl
-                                 << endl;
-                            if (verFila1->dato_int != verFila2->dato_int)
+                            if (verificar1->dato_int != verificar2->dato_int)
                             {
-                                cout << "Tupla diferente" << endl;
+                                cout << "las filas son distintas" << endl;
                                 break;
                             }
-                            verCol = verCol->sig;
-                            verFila1 = verFila1->sig;
-                            verFila2 = verFila2->sig;
-                            if (verCol == NULL)
+                            else if (verificarCol->sig == NULL)
                             {
-                                cout << "igual" << endl;
-                                auxFilas2 = auxCol2->filas;
+                                cout << "las filas son iguales" << endl;
+                                filas copiar = buscar1;
+                                columna copiarCol = tabla1->columna;
+                                string insertValores = "";
+                                while (copiarCol != NULL)
+                                {
+                                    if (copiarCol->tipo_dato)
+                                    {
+                                        stringstream ss;
+                                        string aux;
+                                        if (copiar->dato_int == empty)
+                                        {
+                                            insertValores = insertValores + ":";
+                                        }
+                                        else
+                                        {
+                                            ss << copiar->dato_int;
+                                            aux = ss.str();
+                                            if (insertValores == "")
+                                            {
+                                                insertValores = aux;
+                                            }
+                                            else
+                                            {
+                                                insertValores = insertValores + ":" + aux;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (copiar->dato_string == "")
+                                        {
+                                            insertValores = insertValores + ":";
+                                        }
+                                        else
+                                        {
+                                            if (insertValores == "")
+                                            {
+                                                insertValores = copiar->dato_string;
+                                            }
+                                            else
+                                            {
+                                                insertValores = insertValores + ":" + copiar->dato_string;
+                                            }
+                                        }
+                                    }
+                                    copiarCol = copiarCol->sig;
+                                    copiar = copiar->sig;
+                                }
+                                cout << insertValores << endl;
+                                insertInto(nombreTabla3, insertColumna, insertValores);
                                 break;
                             }
                         }
                         else
                         {
-                            cout << "b verFila1 -> " << verFila1->dato_string << endl
-                                 << "b verFila2 -> " << verFila2->dato_string << endl
-                                 << endl;
-                            if (verFila1->dato_string != verFila2->dato_string)
+                            if (verificar1->dato_string != verificar2->dato_string)
                             {
+                                cout << "las filas son distintas" << endl;
                                 break;
                             }
-                            verCol = verCol->sig;
-                            verFila1 = verFila1->sig;
-                            verFila2 = verFila2->sig;
-                            if (verCol == NULL)
+                            else if (verificarCol->sig == NULL)
                             {
-                                cout << "igual" << endl;
-                                auxFilas2 = auxCol2->filas;
+                                cout << "las filas son iguales" << endl;
+                                filas copiar = buscar1;
+                                columna copiarCol = tabla1->columna;
+                                string insertValores = "";
+                                while (copiarCol != NULL)
+                                {
+                                    if (copiarCol->tipo_dato)
+                                    {
+                                        stringstream ss;
+                                        string aux;
+                                        if (copiar->dato_int == empty)
+                                        {
+                                            insertValores = insertValores + ":";
+                                        }
+                                        else
+                                        {
+                                            ss << copiar->dato_int;
+                                            aux = ss.str();
+                                            if (insertValores == "")
+                                            {
+                                                insertValores = aux;
+                                            }
+                                            else
+                                            {
+                                                insertValores = insertValores + ":" + aux;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (copiar->dato_string == "")
+                                        {
+                                            insertValores = insertValores + ":";
+                                        }
+                                        else
+                                        {
+                                            if (insertValores == "")
+                                            {
+                                                insertValores = copiar->dato_string;
+                                            }
+                                            else
+                                            {
+                                                insertValores = insertValores + ":" + copiar->dato_string;
+                                            }
+                                        }
+                                    }
+                                    copiarCol = copiarCol->sig;
+                                    copiar = copiar->sig;
+                                }
+                                cout << insertValores << endl;
+                                insertInto(nombreTabla3, insertColumna, insertValores);
                                 break;
                             }
+                        }
+                        verificar1 = verificar1->sig;
+                        verificar2 = verificar2->sig;
+                        verificarCol = verificarCol->sig;
+                    }
+                    buscar2 = buscar2->abajo;
+                }
+                else
+                {
+                    buscar2 = buscar2->abajo;
+                }
+            }
+            else
+            {
+                if (buscar1->dato_string == buscar2->dato_string)
+                {
+                    cout << buscar1->dato_string << " - coincide con - " << buscar2->dato_string << endl;
+                    buscar2 = buscar2->abajo;
+                }
+                else
+                {
+                    buscar2 = buscar2->abajo;
+                }
+            }
+        }
+        buscar1 = buscar1->abajo;
+        buscar2 = tabla2->columna->filas;
+        cout << endl;
+    }
+
+    cout << endl;
+}
+
+void minusTable(string nombreTabla1, string nombreTabla2, string nombreTabla3)
+{
+    if (nombreTabla1 == "" || nombreTabla2 == "" || nombreTabla3 == "")
+    {
+        cout << "ERROR - Uno o varios de los campos es vacio por ende no se puede enfectuar el UNION" << endl;
+        return;
+    }
+    Tabla aux = BD;
+    if (aux == NULL)
+    {
+        cout << "No existen tablas..." << endl;
+        return;
+    }
+    Tabla tabla1 = NULL;
+    while (true)
+    {
+        if (aux->nombreTabla == nombreTabla1)
+        {
+            if (aux->columna == NULL)
+            {
+                cout << "No existen columnas..." << endl;
+                return;
+            }
+            tabla1 = aux;
+            aux = BD;
+            break;
+        }
+        aux = aux->sig;
+        if (aux == NULL)
+        {
+            cout << "No existe la tabla..." << nombreTabla1 << endl;
+            return;
+        }
+    }
+
+    Tabla tabla2 = NULL;
+    while (true)
+    {
+        if (aux->nombreTabla == nombreTabla2)
+        {
+            if (aux->columna == NULL)
+            {
+                cout << "No existen columnas..." << endl;
+                return;
+            }
+            tabla2 = aux;
+            aux = BD;
+            break;
+        }
+        aux = aux->sig;
+        if (aux == NULL)
+        {
+            cout << "No existe la tabla..." << nombreTabla2 << endl;
+            return;
+        }
+    }
+
+    while (aux != NULL)
+    {
+        if (aux->nombreTabla == nombreTabla3)
+        {
+            cout << "Ya existe una tabla llamada " << nombreTabla3 << endl;
+            return;
+        }
+        aux = aux->sig;
+    }
+
+    columna auxCol1 = tabla1->columna;
+    columna auxCol2 = tabla2->columna;
+
+    while (true)
+    {
+        if ((auxCol1 == NULL && auxCol2 != NULL) || (auxCol1 != NULL && auxCol2 == NULL))
+        {
+            cout << "Ambas tablas no tienen igual esquema..." << endl;
+            return;
+        }
+        if (auxCol1->nombreColumna != auxCol2->nombreColumna)
+        {
+            cout << "Ambas tablas no tienen igual esquema..." << endl;
+            return;
+        }
+        if ((auxCol1->tipo_dato == true && auxCol2->tipo_dato == false) || (auxCol1->tipo_dato == false && auxCol2->tipo_dato == true))
+        {
+            cout << "Ambas tablas no tienen igual esquema..." << endl;
+            return;
+        }
+        if ((auxCol1->primary_key == true && auxCol2->primary_key == false) || (auxCol1->primary_key == false && auxCol2->primary_key == true))
+        {
+            cout << "Ambas tablas no tienen igual esquema..." << endl;
+            return;
+        }
+        if ((auxCol1->nn == true && auxCol2->nn == false) || (auxCol1->nn == false && auxCol2->nn == true))
+        {
+            cout << "Ambas tablas no tienen igual esquema..." << endl;
+            return;
+        }
+        auxCol1 = auxCol1->sig;
+        auxCol2 = auxCol2->sig;
+
+        if (auxCol1 == NULL && auxCol2 == NULL)
+        {
+            auxCol1 = tabla1->columna;
+            auxCol2 = tabla2->columna;
+            cout << "Los esquemas son iguales" << endl
+                 << endl;
+            break;
+        }
+    }
+
+    createTable(nombreTabla3);
+    while (true)
+    {
+        string tipoDato;
+        string calificador;
+        if (auxCol1->tipo_dato == true)
+        {
+            tipoDato = "int";
+        }
+        else
+        {
+            tipoDato = "string";
+        }
+
+        if (auxCol1->primary_key == true)
+        {
+            calificador = "primary_key";
+        }
+        else
+        {
+            if (auxCol1->nn == true)
+            {
+                calificador = "nn";
+            }
+            else
+            {
+                calificador = "any";
+            }
+        }
+        addCol(nombreTabla3, auxCol1->nombreColumna, tipoDato, calificador);
+        auxCol1 = auxCol1->sig;
+        tipoDato = "";
+        calificador = "";
+
+        if (auxCol1 == NULL)
+        {
+            cout << "Creo las columnas" << endl;
+            break;
+        }
+    }
+    auxCol1 = tabla1->columna;
+    filas auxFilas = auxCol1->filas;
+    filas copiar = auxFilas;
+    string insertColumna = "";
+    string insertFila = "";
+    while (true)
+    {
+        if (insertColumna == "")
+        {
+            insertColumna = auxCol1->nombreColumna;
+        }
+        else
+        {
+            insertColumna = insertColumna + ":" + auxCol1->nombreColumna;
+        }
+        auxCol1 = auxCol1->sig;
+        if (auxCol1 == NULL)
+        {
+            auxCol1 = tabla1->columna;
+            break;
+        }
+    }
+
+    filas buscar1 = tabla1->columna->filas;
+    filas buscar2 = tabla2->columna->filas;
+    columna col = tabla1->columna;
+    bool existe = false;
+    if (buscar1 == NULL)
+    {
+        cout << "NO existen filas para realizar el intersect..." << endl;
+        return;
+    }
+
+    while (buscar1 != NULL)
+    {
+        while (buscar2 != NULL)
+        {
+            if (col->tipo_dato)
+            {
+                if (buscar1->dato_int == buscar2->dato_int)
+                {
+                    cout << buscar1->dato_int << " - coincide con - " << buscar2->dato_int << endl;
+                    filas verificar1 = buscar1;
+                    filas verificar2 = buscar2;
+                    columna verificarCol = col;
+                    while (verificarCol != NULL)
+                    {
+                        if (verificarCol->tipo_dato)
+                        {
+                            if (verificar1->dato_int != verificar2->dato_int)
+                            {
+                                cout << "las filas son distintas" << endl;
+                                break;
+                            }
+                            else if (verificarCol->sig == NULL)
+                            {
+                                cout << "las filas son iguales" << endl;
+                                existe = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if (verificar1->dato_string != verificar2->dato_string)
+                            {
+                                cout << "las filas son distintas" << endl;
+                                break;
+                            }
+                            else if (verificarCol->sig == NULL)
+                            {
+                                cout << "las filas son iguales" << endl;
+                                existe = true;
+                                break;
+                            }
+                        }
+                        verificar1 = verificar1->sig;
+                        verificar2 = verificar2->sig;
+                        verificarCol = verificarCol->sig;
+                    }
+                    buscar2 = buscar2->abajo;
+                }
+                else
+                {
+                    buscar2 = buscar2->abajo;
+                }
+            }
+            else
+            {
+                if (buscar1->dato_string == buscar2->dato_string)
+                {
+                    cout << buscar1->dato_string << " - coincide con - " << buscar2->dato_string << endl;
+                    buscar2 = buscar2->abajo;
+                }
+                else
+                {
+                    buscar2 = buscar2->abajo;
+                }
+            }
+        }
+        if (!existe)
+        {
+            cout << buscar1->dato_int << endl;
+            filas copiar = buscar1;
+            columna copiarCol = tabla1->columna;
+            string insertValores = "";
+            while (copiarCol != NULL)
+            {
+                if (copiarCol->tipo_dato)
+                {
+                    stringstream ss;
+                    string aux;
+                    if (copiar->dato_int == empty)
+                    {
+                        insertValores = insertValores + ":";
+                    }
+                    else
+                    {
+                        ss << copiar->dato_int;
+                        aux = ss.str();
+                        if (insertValores == "")
+                        {
+                            insertValores = aux;
+                        }
+                        else
+                        {
+                            insertValores = insertValores + ":" + aux;
                         }
                     }
                 }
                 else
                 {
-                    auxFilas2 = auxFilas2->abajo;
-                    cout << "Bajo auxFilas2" << endl;
+                    if (copiar->dato_string == "")
+                    {
+                        insertValores = insertValores + ":";
+                    }
+                    else
+                    {
+                        if (insertValores == "")
+                        {
+                            insertValores = copiar->dato_string;
+                        }
+                        else
+                        {
+                            insertValores = insertValores + ":" + copiar->dato_string;
+                        }
+                    }
                 }
-                if (auxFilas2 == NULL)
-                {
-                    cout << "tengo q salir" << endl;
-                    auxFilas2 = auxCol2->filas;
-                    break;
-                }
+                copiarCol = copiarCol->sig;
+                copiar = copiar->sig;
             }
+            cout << insertValores << endl;
+            insertInto(nombreTabla3, insertColumna, insertValores);
+            insertValores = "";
+            cout << "inserto" << endl;
         }
-        if (auxCol1->tipo_dato == false)
+        else
         {
-            // cout << "El tipo de dato a comparar es string" << endl;
-            break;
+            existe = false;
         }
-        auxFilas1 = auxFilas1->abajo;
-        if (auxFilas1 == NULL)
-        {
-            break;
-        }
+
+        buscar1 = buscar1->abajo;
+        buscar2 = tabla2->columna->filas;
+        cout << endl;
     }
-    return;
 }
 
 int main()
@@ -3217,55 +4271,63 @@ int main()
     addCol("arbol", "nombres", "string", "any");
     addCol("arbol", "apellidos", "string", "nn");
 
+    insertInto("alo", "cedula:nombres:apellidos", "3:esteban:quito");
     insertInto("alo", "cedula:nombres:apellidos", "5:juan:antonio");
-    insertInto("alo", "cedula:nombres:apellidos", "2:esteban:quito");
-    insertInto("alo", "cedula:nombres:apellidos", "5:juan:antonio");
-    insertInto("alo", "cedula:nombres:apellidos", "3:mili:vairo");
-    insertInto("alo", "cedula:nombres:apellidos", "7:luis:putarraco");
+    insertInto("alo", "cedula:nombres:apellidos", "9:ateban:quito");
+    insertInto("alo", "cedula:nombres:apellidos", "2:miguelito:abduscan");
+    insertInto("alo", "cedula:nombres:apellidos", "3:mili:vairosa");
+    // insertInto("alo", "cedula:nombres:apellidos", "5:juan:antonio");
+    // insertInto("alo", "cedula:nombres:apellidos", "3:mili:vairo");
 
     insertInto("arbol", "cedula:nombres:apellidos", "6:carlos:delvalle");
     insertInto("arbol", "cedula:nombres:apellidos", "3:mili:vairosa");
-    insertInto("arbol", "cedula:nombres:apellidos", "11:sos:graciosa");
+    insertInto("arbol", "cedula:nombres:apellidos", "5:juan:antonio");
     insertInto("arbol", "cedula:nombres:apellidos", "9:ana:clara");
-    // printDataTable("alo", "");
+
     system("cls");
+
+    // printDataTable("alo", "");
+    // deleteTupla("alo", "nombres<esteban");
+    // intersect("alo", "arbol", "rinoceronte");
+    // updateTuplas("alo", "cedula>2", "apellidos", "puta");
     printDataTable("alo", "");
-    deleteTupla("alo", "nombres=juan");
-    printDataTable("alo", "");
+    minusTable("alo", "arbol", "lupa");
+    printDataTable("lupa", "");
+    // printDataTable("rinoceronte", "");
+    // printDataTable("alo", "");
     // addCol("arbol", "ciudad", "string", "any");
-    //  deleteTupla("alo", "cedula=5");
+    // deleteTupla("alo", "cedula=5");
     // printMetadata("arbol");
-    //  intersectTuplas("alo", "arbol", "rinoceronte");
-    //  addCol("alo", "colores", "int", "nn");
-    //   insertInto("alo", "cedula:nombres:apellidos", "4:jose:manuel");
+    // addCol("alo", "colores", "int", "nn");
+    // insertInto("alo", "cedula:nombres:apellidos", "4:jose:manuel");
     // insertInto("arbol", "cedula:nombres:apellidos:ciudad", "4:kai:sa:runaterra");
     // printDataTable("arbol", "");
 
     // unionTable("alo", "arbol", "cacatua");
     // printMetadata("cacatua");
-    //  deleteTupla("alo", "");
-    //   alterCol("alo", "cedula", "string", "any", "modifique");
+    // deleteTupla("alo", "");
+    // alterCol("alo", "cedula", "string", "any", "modifique");
     // printDataTable("alo", "");
     // printDataTable("cacatua", "");
 
     // createTable("alo");
     // printTables(BD);
-    //  imprimir(BD);
-    //  imprimir(BD);
-    //  addCol("alo", "queso", "", "");
+    // imprimir(BD);
+    // imprimir(BD);
+    // addCol("alo", "queso", "", "");
     //
     // addCol("personas", "nombres", "string", "nn");
     // addCol("personas", "apellido", "string", "nn");
     // addCol("personas", "edad", "string", "nn");
-    //  addCol("personas", "nombrePerro", "string", "nn");
-    //  dropTable("hi"); printTables(BD);
-    //   addCol("pescados", "naranja", "", "primary_key");
-    //   addCol("alo", "soca", "int", "nn");
-    //   addCol("alo", "quiesoto", "int", "nn");
+    // addCol("personas", "nombrePerro", "string", "nn");
+    // dropTable("hi"); printTables(BD);
+    // addCol("pescados", "naranja", "", "primary_key");
+    // addCol("alo", "soca", "int", "nn");
+    // addCol("alo", "quiesoto", "int", "nn");
 
-    //  system("cls");
-    //  cout << "llegue al print" << endl
-    //       << endl
+    // system("cls");
+    // cout << "llegue al print" << endl
+    //      << endl
     // insertInto("personas", "cedula:nombres:apellido:edad", "1:esteban:quito:25");
     // insertInto("personas", "cedula:nombres:apellido:edad", "7:mili:vairo:19");
     // insertInto("personas", "cedula:nombres:apellido:edad", "2:jose:antonio:23"); //       << endl;
@@ -3308,7 +4370,8 @@ int main()
     do
     {
         cout << "1 - INGRESAR A LA BASE DE DATOS\n"
-             << "2 - VISUALIZAR SU BASE DE DATOS\n"
+             << "2 - OPERACIONES ENTRE TABLAS\n"
+             << "3 - VISUALIZAR SU BASE DE DATOS\n"
              << "0 - SALIR" << endl;
         cin >> opcion;
         getchar();
@@ -3321,6 +4384,11 @@ int main()
             break;
 
         case 2:
+            system("cls");
+            submenu_operaciones_tablas();
+            break;
+
+        case 3:
             system("cls");
             submenu_imprimir();
             break;
@@ -3391,7 +4459,6 @@ void submenu_tablas()
     {
         cout << "1 - CREAR TABLAS\n"
              << "2 - ELIMINAR TABLAS\n"
-             << "3 - OPERACIONES ENTRE TABLAS\n"
              << "0 - Volver al submenu" << endl;
 
         cin >> opcion;
@@ -3412,18 +4479,6 @@ void submenu_tablas()
             cout << "Ingrese el nombre de su TABLA a eliminar" << endl;
             cin >> eliminarTabla;
             dropTable(eliminarTabla);
-            break;
-        }
-        case 3:
-        {
-            system("cls");
-            cout << "Ingrese el nombre de su TABLA" << endl;
-            cin >> nombreTabla;
-            cout << "Ingrese la condicion" << endl;
-            cin >> condicion;
-            cout << "Ingrese el nombre de la nueva TABLA a crear" << endl;
-            cin >> nombreTabla2;
-            selectWhere(nombreTabla, condicion, nombreTabla2);
             break;
         }
         case 0:
@@ -3518,13 +4573,17 @@ void submenu_tuplas()
     string nombreTabla;
     string nombreColumna;
     string valoresTuplas;
+    string condicionEliminar;
+    string condicionModificar;
+    string columnaModificar;
+    string valorModificar;
     int opcion;
 
     do
     {
         cout << "1 - CREAR TUPLAS\n"
-             << "2 - MODIFICAR TUPLAS (NO IMPLEMENTADO :C )\n"
-             << "3 - ELIMINAR TUPLAS (NO IMPLEMENTADO :C )\n"
+             << "2 - ELIMINAR TUPLAS\n"
+             << "3 - MODIFICAR TUPLAS\n"
              << "0 - Volver al submenu" << endl;
         cin >> opcion;
         getchar();
@@ -3536,15 +4595,107 @@ void submenu_tuplas()
             cout << "Ingrese el nombre de la TABLA" << endl;
             cin >> nombreTabla;
             cout << "Ingrese el los nombres de las columnas separados por dos puntos (:)" << endl
-            << "ej. columna1:columna2:columna3" << endl;
+                 << "ej. columna1:columna2:columna3" << endl;
             cin >> nombreColumna;
             cout << "Ingrese el los valores de las columnas separados por dos puntos (:)" << endl
-            << "ej. valor1:valor2:valor3" << endl;
+                 << "ej. valor1:valor2:valor3" << endl;
             cin >> valoresTuplas;
             cout << endl;
             insertInto(nombreTabla, nombreColumna, valoresTuplas);
             break;
         }
+        case 2:
+        {
+            system("cls");
+            cout << "Ingrese el nombre de la TABLA" << endl;
+            cin >> nombreTabla;
+            cout << "Ingrese la columna en conjunto con las condicion y el valor de la tupla que eliminara" << endl;
+            cin >> condicionEliminar;
+            deleteTupla(nombreTabla, condicionEliminar);
+            break;
+        }
+        case 3:
+        {
+            system("cls");
+            cout << "Ingrese el nombre de la TABLA" << endl;
+            cin >> nombreTabla;
+            cout << "Ingrese la columna en conjunto con las condicion y el valor de la tupla que modificara" << endl;
+            cin >> condicionModificar;
+            cout << "Ingrese la columna a modificar:" << endl;
+            cin >> columnaModificar;
+            cout << "Ingrese el valor de la tupla que va a modificar:" << endl;
+            cin >> valorModificar;
+            updateTuplas(nombreTabla, condicionModificar, columnaModificar, valorModificar);
+            break;
+        }
+        case 0:
+        {
+            system("cls");
+            cout << "..." << endl;
+            system("cls");
+            sub_menu();
+        }
+        }
+    } while (opcion != 0);
+}
+
+void submenu_operaciones_tablas()
+{
+    string nombreTabla;
+    string nombreTabla2;
+    string nombreTabla1;
+    string nombreTabla3;
+    string condicion;
+
+    int opcion;
+    do
+    {
+        cout << "1 - SELECT_WHERE\n"
+             << "2 - UNION  \n"
+             << "3 - INTERSECT\n"
+             << "0 - Volver al submenu" << endl;
+
+        cin >> opcion;
+        getchar();
+        switch (opcion)
+        {
+       case 1:
+        {
+            system("cls");
+            cout << "Ingrese el nombre de su TABLA" << endl;
+            cin >> nombreTabla;
+            cout << "Ingrese la condicion" << endl;
+            cin >> condicion;
+            cout << "Ingrese el nombre de la nueva TABLA a crear" << endl;
+            cin >> nombreTabla2;
+            selectWhere(nombreTabla, condicion, nombreTabla2);
+            break;
+        }
+        case 2:
+        {
+            system("cls");
+            cout << "Ingrese el nombre de la TABLA 1" << endl;
+            cin >> nombreTabla1;
+            cout << "Ingrese el nombre de la TABLA 2" << endl;
+            cin >> nombreTabla2;
+            cout << "Ingrese el nombre de la TABLA a crear" << endl;
+            cin >> nombreTabla3;
+            unionTable(nombreTabla1, nombreTabla2, nombreTabla3);
+            break;
+        }
+        case 3:
+        {
+            system("cls");
+            cout << "Ingrese el nombre de la TABLA 1" << endl;
+            cin >> nombreTabla1;
+            cout << "Ingrese el nombre de la TABLA 2" << endl;
+            cin >> nombreTabla2;
+            cout << "Ingrese el nombre de la TABLA a crear" << endl;
+            cin >> nombreTabla3;
+            intersect ( nombreTabla1, nombreTabla2, nombreTabla3);
+            break;
+        }
+
         case 0:
         {
             system("cls");
@@ -3588,7 +4739,7 @@ void submenu_imprimir()
             break;
         }
         case 3:
-        system("cls");
+            system("cls");
             cout << "Ingrese el nombre de la TABLA que busca" << endl;
             cin >> nombreTabla;
             cout << endl;
